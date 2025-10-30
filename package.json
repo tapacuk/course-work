@@ -1,0 +1,22 @@
+{
+  "name": "course-work",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@eslint/js": "^9.38.0",
+    "@types/bun": "latest",
+    "eslint": "^9.38.0",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript-eslint": "^8.46.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . — fix && prettier — write .",
+    "prepare": "lint-staged"
+  }
+}
