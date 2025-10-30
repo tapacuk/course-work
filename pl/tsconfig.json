@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "module": "Preserve",
+    "lib": ["ESNext"],
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "course-work/*": ["../bll/src/*"]
+    }
+  },
+  "references": [{ "path": "../bll" }],
+  "include": ["src"]
+}

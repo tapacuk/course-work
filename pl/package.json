@@ -1,0 +1,14 @@
+{
+  "name": "course-work-pl",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/consoleApp.js",
+  "exports": "./dist/consoleApp.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "bun run src/consoleApp.ts"
+  },
+  "dependencies": {
+    "course-work-bll": "workspace:*"
+  }
+}

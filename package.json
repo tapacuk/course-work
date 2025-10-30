@@ -3,11 +3,17 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "workspaces": [
+    "dal",
+    "bll",
+    "pl"
+  ],
   "devDependencies": {
     "@eslint/js": "^9.38.0",
     "@types/bun": "latest",
     "eslint": "^9.38.0",
     "globals": "^16.4.0",
+    "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
     "typescript-eslint": "^8.46.2"
   },
@@ -17,6 +23,8 @@
   "scripts": {
     "lint": "eslint .",
     "lint:fix": "eslint . — fix && prettier — write .",
-    "prepare": "lint-staged"
+    "prepare": "lint-staged",
+    "start": "bun run --cwd ./pl src/index.ts",
+    "build": "bun run --cwd dal build && bun run --cwd bll build && bun run --cwd pl build"
   }
 }
