@@ -1,4 +1,4 @@
-import type { IDataProvider } from "./iDataProvider.js";
+import type { IDataProvider } from "./dataProvider.interface.js";
 import { promises as fs } from "fs";
 
 export class JSONProvider<T extends object> implements IDataProvider<T> {
