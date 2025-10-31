@@ -1,0 +1,33 @@
+[
+  {
+    "id": "TRAIN-KYIV-VOLYNSKYY-KYIV-FASTIV",
+    "name": "Kyiv-Volynskyy",
+    "route": "Kyiv-Fastiv",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "coupe",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-A-A",
+    "name": "a",
+    "route": "a",
+    "wagons": []
+  }
+]

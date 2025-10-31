@@ -8,7 +8,7 @@ export class JSONProvider<T extends object> implements IDataProvider<T> {
     return new JSONProvider<U>(entityClass);
   }
 
-  async read(filePath: string): Promise<T[]> {
+  async read(filePath: string = "./trains.json"): Promise<T[]> {
     try {
       const fileContent = await fs.readFile(filePath, "utf-8");
       const parsed: Partial<T>[] = JSON.parse(fileContent);
@@ -19,15 +19,15 @@ export class JSONProvider<T extends object> implements IDataProvider<T> {
     }
   }
 
-  async write(filePath: string, items: T[]): Promise<void> {
+  async write(filePath: string = "./trains.json", items: T[]): Promise<void> {
     await fs.writeFile(filePath, JSON.stringify(items, null, 2), "utf-8");
   }
 
-  async create(filePath: string): Promise<void> {
+  async create(filePath: string = "./trains.json"): Promise<void> {
     await fs.writeFile(filePath, "[]", "utf-8");
   }
 
-  async deleteFile(filePath: string): Promise<void> {
+  async deleteFile(filePath: string = "./trains.json"): Promise<void> {
     await fs.unlink(filePath);
   }
 }

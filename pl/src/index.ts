@@ -1,1 +1,4 @@
-console.log("hi");
+import Menu from "./menu";
+
+const menu = new Menu();
+menu.show();

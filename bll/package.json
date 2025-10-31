@@ -1,13 +1,13 @@
 {
   "name": "course-work-bll",
   "version": "1.0.0",
-  "type": "module",
-  "main": "dist/index.js",
-  "exports": "./dist/index.js",
+  "private": true,
+  "main": "src/index.ts",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "course-work-dal": "file:../dal"
+  },
   "scripts": {
     "build": "tsc -b"
-  },
-  "dependencies": {
-    "course-work-dal": "workspace:*"
   }
 }

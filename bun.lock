@@ -10,17 +10,18 @@
         "globals": "^16.4.0",
         "lint-staged": "^16.2.6",
         "prettier": "^3.6.2",
+        "typescript": "^5.0.0",
         "typescript-eslint": "^8.46.2",
       },
       "peerDependencies": {
-        "typescript": "^5",
+        "typescript": "^5.9.3",
       },
     },
     "bll": {
       "name": "course-work-bll",
       "version": "1.0.0",
       "dependencies": {
-        "course-work-dal": "workspace:*",
+        "course-work-dal": "file:../dal",
       },
     },
     "dal": {
@@ -31,7 +32,7 @@
       "name": "course-work-pl",
       "version": "1.0.0",
       "dependencies": {
-        "course-work-bll": "workspace:*",
+        "course-work-bll": "file:../bll",
       },
     },
   },
@@ -350,6 +351,10 @@
 
     "@typescript-eslint/typescript-estree/minimatch": ["minimatch@9.0.5", "", { "dependencies": { "brace-expansion": "^2.0.1" } }, "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow=="],
 
+    "course-work-bll/course-work-dal": ["course-work-dal@file:dal", {}],
+
+    "course-work-pl/course-work-bll": ["course-work-bll@file:bll", { "dependencies": { "course-work-dal": "file:../dal" } }],
+
     "fast-glob/glob-parent": ["glob-parent@5.1.2", "", { "dependencies": { "is-glob": "^4.0.1" } }, "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="],
 
     "slice-ansi/ansi-styles": ["ansi-styles@6.2.3", "", {}, "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg=="],
@@ -359,5 +364,7 @@
     "wrap-ansi/string-width": ["string-width@7.2.0", "", { "dependencies": { "emoji-regex": "^10.3.0", "get-east-asian-width": "^1.0.0", "strip-ansi": "^7.1.0" } }, "sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ=="],
 
     "@typescript-eslint/typescript-estree/minimatch/brace-expansion": ["brace-expansion@2.0.2", "", { "dependencies": { "balanced-match": "^1.0.0" } }, "sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ=="],
+
+    "course-work-pl/course-work-bll/course-work-dal": ["course-work-dal@file:dal", {}],
   }
 }
