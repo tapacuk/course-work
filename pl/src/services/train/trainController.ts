@@ -1,4 +1,4 @@
-import { question } from "./question";
+import { question } from "../question";
 import { Train, TrainService, Wagon } from "course-work-bll";
 
 export default class TrainController {
@@ -116,28 +116,6 @@ export default class TrainController {
       }
     } catch (error) {
       console.error("Failed to delete train:", error);
-    }
-  }
-
-  public async listTrains(): Promise<void> {
-    console.clear();
-    console.log("\n-- List of Trains --");
-    try {
-      const trains = await this.service.load(this.filePath);
-
-      if (trains.length === 0) {
-        console.log("No trains available");
-      } else {
-        trains.forEach((t: Train) => {
-          console.log(`Name: ${t.name}, Route: ${t.route}, ID: ${t.id}`);
-        });
-
-        console.log(`> Total trains: ${trains.length}`);
-        await question("\nPress any key to continue...");
-        console.clear();
-      }
-    } catch (error) {
-      console.error("Failed to load trains:", error);
     }
   }
 }

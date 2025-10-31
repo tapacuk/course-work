@@ -1,11 +1,14 @@
 import { question } from "./services/question";
-import TrainController from "./services/trainController";
+import TrainController from "./services/train/trainController";
+import TrainShower from "./services/train/trainReader";
 
 export default class Menu {
   private trainController: TrainController;
+  private trainShower: TrainShower;
 
   constructor() {
     this.trainController = new TrainController();
+    this.trainShower = new TrainShower();
   }
 
   public async show(): Promise<void> {
@@ -22,7 +25,7 @@ export default class Menu {
             console.log("\n--- Train Management ---");
             console.log("1) Add Train");
             console.log("2) Remove Train");
-            console.log("3) List Trains");
+            console.log("3) Look for Trains");
             console.log("0) Back to Main Menu");
             const trainChoice = await question("Choose an option: ");
             switch (trainChoice) {
@@ -36,7 +39,7 @@ export default class Menu {
                 break;
               case "3":
                 console.clear();
-                await this.trainController.listTrains();
+                await this.trainShower.searchTrain();
                 break;
               case "0":
                 console.clear();

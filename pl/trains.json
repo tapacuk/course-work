@@ -18,7 +18,31 @@
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": true
+          },
+          {
+            "id": 4,
+            "isBooked": true
+          },
+          {
+            "id": 5,
+            "isBooked": true
+          },
+          {
+            "id": 6,
+            "isBooked": true
+          },
+          {
+            "id": 7,
+            "isBooked": true
+          },
+          {
+            "id": 8,
+            "isBooked": true
+          },
+          {
+            "id": 9,
+            "isBooked": true
           }
         ]
       },
