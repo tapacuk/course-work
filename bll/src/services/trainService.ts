@@ -55,6 +55,18 @@ export class TrainService {
   async delete(filePath: string): Promise<void> {
     await this.provider.deleteFile(filePath);
   }
+
+  async deleteSpecific(filePath: string, id: string): Promise<boolean> {
+    const trains = await this.load(filePath);
+    const remaining = trains.filter((t) => t.id !== id);
+
+    if (remaining.length === trains.length) {
+      return false;
+    }
+
+    await this.provider.write(filePath, remaining);
+    return true;
+  }
 }
 
 export default TrainService;

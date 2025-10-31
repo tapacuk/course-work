@@ -5,17 +5,17 @@ export default class TrainController {
   private filePath: string;
   private service: any;
 
-  constructor(filePath = "./trains.json", trainService?: any) {
+  constructor(filePath = "./trains.json", trainService?: TrainService) {
     this.filePath = filePath;
 
     try {
       this.service = trainService ?? new TrainService(this.filePath);
-    } catch {
-      throw new Error("Failed to initialize TrainService");
+    } catch (error) {
+      console.error("Failed to initialize TrainService", error);
     }
   }
 
-  public async addTrainFlow(): Promise<void> {
+  public async addTrain(): Promise<void> {
     console.log("\n-- Add Train --");
     const name = await question("Train name: ");
     if (!name) {
@@ -40,8 +40,104 @@ export default class TrainController {
 
     const train = new Train({ id, name, route, wagons: wagons });
 
-    await this.service.save(this.filePath, train);
+    console.clear();
+    try {
+      await this.service.save(this.filePath, train);
+      console.log("Train added successfully.");
+    } catch (error) {
+      console.error("Failed to add train.", error);
+    }
+  }
 
-    console.log("Train added successfully.");
+  public async deleteTrain(): Promise<void> {
+    const keyword = await question("Search for a train to delete: ");
+    if (!keyword) {
+      console.log("keyword is required.");
+      return;
+    }
+
+    const trains = await this.service.load(this.filePath);
+    const normalized = keyword.toUpperCase().trim();
+    const matches = trains.filter((t: Train) =>
+      t.id.toUpperCase().includes(normalized)
+    );
+
+    if (matches.length === 0) {
+      console.clear();
+      console.log("No matching trains found.");
+      return;
+    }
+
+    console.clear();
+
+    let choice: any;
+    let running = true;
+    while (running) {
+      console.log("\nFound trains:");
+      matches.forEach((t: Train, i: number) => {
+        console.log(`${i + 1}. ${t.id} (${t.name}, ${t.route})`);
+      });
+
+      choice = await question(
+        "\nEnter number of train to delete (or 0 to cancel): "
+      );
+
+      if (Number(choice) === 0) {
+        console.clear();
+        console.log("Cancelled.");
+        return;
+      }
+      if (
+        Number(choice) < 0 ||
+        Number(choice) - 1 >= matches.length ||
+        isNaN(Number(choice))
+      ) {
+        console.clear();
+        console.log("Invalid choice.");
+        continue;
+      } else {
+        running = false;
+      }
+    }
+
+    const index = Number(choice) - 1;
+
+    const trainToDelete = matches[index];
+    console.clear();
+    try {
+      const deleted = await this.service.deleteSpecific(
+        this.filePath,
+        trainToDelete.id
+      );
+      if (deleted) {
+        console.log(`Train "${trainToDelete.id}" deleted successfully.`);
+      } else {
+        console.log("Failed to delete train (maybe already removed).");
+      }
+    } catch (error) {
+      console.error("Failed to delete train:", error);
+    }
+  }
+
+  public async listTrains(): Promise<void> {
+    console.clear();
+    console.log("\n-- List of Trains --");
+    try {
+      const trains = await this.service.load(this.filePath);
+
+      if (trains.length === 0) {
+        console.log("No trains available");
+      } else {
+        trains.forEach((t: Train) => {
+          console.log(`Name: ${t.name}, Route: ${t.route}, ID: ${t.id}`);
+        });
+
+        console.log(`> Total trains: ${trains.length}`);
+        await question("\nPress any key to continue...");
+        console.clear();
+      }
+    } catch (error) {
+      console.error("Failed to load trains:", error);
+    }
   }
 }

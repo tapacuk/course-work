@@ -1,11 +1,115 @@
 [
   {
-    "id": "TRAIN-KYIV-VOLYNSKYY-KYIV-FASTIV",
-    "name": "Kyiv-Volynskyy",
-    "route": "Kyiv-Fastiv",
+    "id": "TRAIN-EXPRESS-LVIV-ODESA",
+    "name": "Express",
+    "route": "Lviv-Odesa",
     "wagons": [
       {
         "id": 1,
+        "type": "plackart",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "plackart",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-REGIONAL-KHARKIV-POLTAVA",
+    "name": "Regional",
+    "route": "Kharkiv-Poltava",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "coupe",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "econom",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-NIGHTEXPRESS-KYIV-LVIV",
+    "name": "Night Express",
+    "route": "Kyiv-Lviv",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "lux",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 2,
         "type": "coupe",
         "seats": [
           {
@@ -25,9 +129,46 @@
     ]
   },
   {
-    "id": "TRAIN-A-A",
-    "name": "a",
-    "route": "a",
-    "wagons": []
+    "id": "TRAIN-INTERCITYPLUS-ODESA-KHARKIV",
+    "name": "Intercity Plus",
+    "route": "Odesa-Kharkiv",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "coupe",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "first-class",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
   }
 ]
