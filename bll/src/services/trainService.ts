@@ -15,7 +15,7 @@ export class TrainService {
   async load(filePath: string): Promise<Train[]> {
     const raw = (await this.provider.read(filePath)) as any[];
 
-    return raw.map((r) => {
+    return raw.map((r: Train) => {
       const wagons: Wagon[] = (r.wagons || []).map((w: any) => {
         const seats: Seat[] = (w.seats || []).map(
           (s: any) => new Seat({ id: s.id, isBooked: s.isBooked })
@@ -48,12 +48,16 @@ export class TrainService {
     try {
       await this.provider.create(filePath);
     } catch {
-      throw new Error("Failed to create storage file");
+      throw new Error("Failed to create file");
     }
   }
 
   async delete(filePath: string): Promise<void> {
-    await this.provider.deleteFile(filePath);
+    try {
+      await this.provider.deleteFile(filePath);
+    } catch {
+      throw new Error("Failed to delete file");
+    }
   }
 
   async deleteSpecific(filePath: string, id: string): Promise<boolean> {
