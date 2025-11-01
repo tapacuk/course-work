@@ -1,6 +1,6 @@
 import { Seat } from "./seat";
 
-type WagonType = "coupe" | "berth";
+type WagonType = "coupe" | "berth" | "sleeper";
 type WagonProps = {
   id: number;
   type: WagonType;

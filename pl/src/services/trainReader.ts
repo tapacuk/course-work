@@ -1,7 +1,7 @@
-import { question } from "../question";
+import { question } from "./question";
 import { Seat, Train, TrainService, Wagon } from "course-work-bll";
 
-export default class TrainShower {
+export default class TrainReader {
   private filePath: string;
   private service: any;
 
@@ -29,11 +29,11 @@ export default class TrainShower {
         });
 
         console.log(`> Total trains: ${trains.length}`);
-        await question("\nPress any key to continue...");
+        await question("\nPress Enter to continue...");
         console.clear();
       }
-    } catch (error) {
-      console.error("Failed to load trains:", error);
+    } catch {
+      throw new Error("Failed to load trains:");
     }
   }
 
@@ -53,7 +53,7 @@ export default class TrainShower {
     if (matches.length === 0) {
       console.clear();
       console.log("No matching trains found.");
-      await question("\nPress any key to continue...");
+      await question("\nPress Enter to continue...");
       return;
     }
 
@@ -67,11 +67,6 @@ export default class TrainShower {
     console.log("\nFound trains:");
     matchesResult();
 
-    const lookForDetails = await question("\nLook for details? (y/n): ");
-    if (lookForDetails.toLowerCase() !== "y") {
-      return;
-    }
-
     let choice: any;
     let running = true;
     while (running) {
@@ -80,7 +75,7 @@ export default class TrainShower {
       matchesResult();
 
       choice = await question(
-        "\nEnter number of train for details (or 0 to cancel): "
+        "\nEnter number of train for details (or 0 to exit): "
       );
 
       if (Number(choice) === 0) {
@@ -125,26 +120,26 @@ export default class TrainShower {
       const availableSeats = w.seats.length - bookedSeats;
       const bookedPercent = ((bookedSeats / w.seats.length) * 100).toFixed(2);
 
-      console.log(`\n  - Wagon ID: ${w.id}, Type: ${w.type}`);
+      console.log(`  > Wagon ID: ${w.id}, Type: ${w.type}`);
       console.log(
-        `    Total seats: ${w.seats.length}, Booked: ${bookedSeats}, Available: ${availableSeats} (${bookedPercent}%)`
+        `    Total seats: ${w.seats.length} / ■ Booked: ${bookedSeats} / □ Available: ${availableSeats} (${bookedPercent}%)`
       );
       const seatsInfo = w.seats
         .map((s, i) =>
           (i + 1) % 6 === 0
-            ? `${i + 1}. ${s.isBooked ? "+" : "-"}\n        `
-            : `${i + 1}. ${s.isBooked ? "+" : "-"}`
+            ? `${i + 1}. ${s.isBooked ? "■" : "□"}\n        `
+            : `${i + 1}. ${s.isBooked ? "■" : "□"}`
         )
         .join("   ");
 
-      console.log(`    Seats: ${seatsInfo}`);
+      console.log(`    Seats: ${seatsInfo}\n`);
     });
 
-    console.log("\n> Total ");
+    console.log("> Total ");
     console.log(
       `  Wagons: ${totalWagons} | Seats: ${totalSeats} | Booked: ${totalBooked} seats / ${totalBookedPrecent}%`
     );
-    await question("\nPress any key to continue...");
+    await question("\nPress Enter to continue...");
     console.clear();
   }
 }
