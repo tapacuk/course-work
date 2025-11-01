@@ -31,3 +31,5 @@ export class JSONProvider<T extends object> implements IDataProvider<T> {
     await fs.unlink(filePath);
   }
 }
+
+export default JSONProvider;
