@@ -15,7 +15,7 @@ export class WagonController {
     }
   }
 
-  public async addWagon(train: Train): Promise<void> {
+  public async addWagon(train: Train): Promise<Train> {
     let wagonType: string = "";
     let seatsNum: string = "";
     while (true) {
@@ -49,18 +49,67 @@ export class WagonController {
       new Wagon({ id: train.wagons.length + 1, type: wagonType as any, seats })
     );
 
-    try {
-      try {
-        await this.service.deleteSpecific(this.filePath, train.id);
-      } catch {
-        throw new Error(
-          "Failed to delete existing train before saving updated one"
-        );
-      }
-      await this.service.save(this.filePath, train);
-      console.log("Wagon added successfully!");
-    } catch {
-      throw new Error("Failed to save train with new wagon");
+    return train;
+  }
+
+  public async deleteWagon(train: Train): Promise<Train> {
+    console.log(`\n-- Wagons from ${train.name} --`);
+    train.wagons.forEach((w) => {
+      console.log(`Wagon ID: ${w.id}, Type: ${w.type}`);
+    });
+
+    let wagonID = await question("\nEnter the ID of the wagon to delete: ");
+    const wagonId = Number(wagonID);
+
+    const wagonIndex = train.wagons.findIndex((w) => w.id === wagonId);
+    if (wagonIndex === -1) {
+      throw new Error("Wagon not found");
     }
+
+    const wagon = train.wagons[wagonIndex];
+    if (wagon.seats && wagon.seats.some((s: any) => s.isBooked === true)) {
+      throw new Error("Cannot delete wagon: some seats are booked");
+    }
+
+    train.wagons.splice(wagonIndex, 1);
+    return train;
+  }
+
+  public async showWagonInfo(train: Train): Promise<void> {
+    console.log(`\n-- Wagons from ${train.name} --`);
+    train.wagons.forEach((w) => {
+      console.log(
+        `Wagon ID: ${w.id}, Type: ${w.type}, Seats: ${w.seats.length}`
+      );
+    });
+
+    let wagonID = await question("\nEnter the ID of the wagon to view: ");
+    const wagonId = Number(wagonID);
+    const wagon = train.wagons.find((w) => w.id === wagonId);
+    if (!wagon) {
+      throw new Error("Wagon not found");
+    }
+
+    console.clear();
+
+    const bookedSeats = wagon.seats.filter((s) => s.isBooked).length;
+    const availableSeats = wagon.seats.length - bookedSeats;
+    const bookedPercent = ((bookedSeats / wagon.seats.length) * 100).toFixed(2);
+    console.log(
+      `\nWagon ID: ${wagon.id}, Type: ${wagon.type}, Fullness: ${bookedPercent}%`
+    );
+    console.log(
+      `Total seats: ${wagon.seats.length} / ■ Booked: ${bookedSeats} / □ Available: ${availableSeats}`
+    );
+    const seatsInfo = wagon.seats
+      .map((s, i) =>
+        (i + 1) % 6 === 0
+          ? `${i + 1}. ${s.isBooked ? "■" : "□"}\n      `
+          : `${i + 1}. ${s.isBooked ? "■" : "□"}`
+      )
+      .join(" ");
+    console.log(`Seats: ${seatsInfo}\n`);
+
+    await question("Press Enter to continue...");
   }
 }

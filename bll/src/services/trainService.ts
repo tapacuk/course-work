@@ -71,6 +71,13 @@ export class TrainService {
     await this.provider.write(filePath, remaining);
     return true;
   }
+
+  async generateID(name: string, route: string): Promise<string> {
+    const normalizedName = name.toUpperCase().trim().replace(/\s+/g, "-");
+    const normalizedRoute = route.trim().replace(/\s+/g, "-");
+    const id = `TRAIN-${normalizedName}-${normalizedRoute.toUpperCase()}`;
+    return id;
+  }
 }
 
 export default TrainService;

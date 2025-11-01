@@ -87,9 +87,8 @@ export default class TrainController {
       );
     }
 
-    const normalizedName = name.toUpperCase().trim().replace(/\s+/g, "-");
+    const id = await this.service.generateID(name, route);
     const normalizedRoute = route.trim().replace(/\s+/g, "-");
-    const id = `TRAIN-${normalizedName}-${normalizedRoute.toUpperCase()}`;
 
     const train = new Train({
       id,
@@ -100,6 +99,7 @@ export default class TrainController {
 
     try {
       await this.service.save(this.filePath, train);
+      console.clear();
       console.log("Train added successfully.");
     } catch {
       throw new Error("Failed to save train in file");
@@ -158,8 +158,17 @@ export default class TrainController {
     }
 
     const index = Number(choice) - 1;
-
     const trainToDelete = matches[index];
+
+    const hasBookedSeats = trainToDelete.wagons.some((w: Wagon) =>
+      w.seats.some((s: any) => s.isBooked === true)
+    );
+    if (hasBookedSeats) {
+      console.clear();
+      console.log("Cannot delete train: some seats in wagons are booked!");
+      return;
+    }
+
     console.clear();
     try {
       const deleted = await this.service.deleteSpecific(
@@ -228,41 +237,101 @@ export default class TrainController {
     }
 
     const index = Number(choice) - 1;
-    const trainToEdit = matches[index];
+    let trainToEdit = matches[index];
 
+    console.clear();
     let editRunning = true;
     while (editRunning) {
-      console.clear();
       console.log(
-        `(!) Editing Train: ${trainToEdit.name} ${trainToEdit.route} (${trainToEdit.id})`
+        `\n(!) Editing Train: ${trainToEdit.name} ${trainToEdit.route} (${trainToEdit.id})`
       );
       console.log("\nChoose what to edit:");
       console.log("1) Name");
       console.log("2) Route");
       console.log("3) Wagons");
-      console.log("0) Cancel");
+      console.log("\n0) Cancel");
+
       const editChoice = await question("\nChoose an option > ");
       switch (editChoice) {
         case "1":
+          console.clear();
           const newName = await question("Enter new name: ");
           if (newName) {
             trainToEdit.name = newName;
+            console.clear();
+            console.log("Name updated");
+          } else {
+            console.clear();
+            console.log("Returned");
           }
           break;
         case "2":
           const newRoute = await question("Enter new route: ");
           if (newRoute) {
             trainToEdit.route = newRoute;
+            console.clear();
+            console.log("Route updated");
+          } else {
+            console.clear();
+            console.log("Returned");
           }
           break;
         case "3":
           console.clear();
-          editRunning = false;
-          await this.wagonController.addWagon(trainToEdit);
-          break;
+          while (true) {
+            console.log("\n-- Wagons Edit Menu --");
+            console.log("1) Add Wagon");
+            console.log("2) Delete Wagon");
+            console.log("3) Show Wagon Info");
+            console.log("\n0) Back to previous menu");
+            const wagonChoice = await question("\nChoose an option > ");
+            switch (wagonChoice) {
+              case "1":
+                console.clear();
+                try {
+                  trainToEdit =
+                    await this.wagonController.addWagon(trainToEdit);
+                  console.log("Wagon added successfully!");
+                } catch {
+                  throw new Error("Failed to add wagon to train");
+                }
+                editRunning = false;
+                break;
+              case "2":
+                console.clear();
+                try {
+                  trainToEdit =
+                    await this.wagonController.deleteWagon(trainToEdit);
+                  console.clear();
+                  console.log("Wagon deleted successfully!");
+                } catch (error: any) {
+                  console.clear();
+                  console.log(`${error.message}`);
+                }
+                editRunning = false;
+                break;
+              case "3":
+                console.clear();
+                try {
+                  await this.wagonController.showWagonInfo(trainToEdit);
+                } catch (error: any) {
+                  console.clear();
+                  console.log(`${error.message}`);
+                }
+                console.clear();
+                editRunning = false;
+                break;
+              case "0":
+                console.clear();
+                return;
+              default:
+                console.clear();
+                console.log("Unknown option.");
+                break;
+            }
+          }
         case "0":
           console.clear();
-          console.log("Cancelled.");
           editRunning = false;
           break;
         default:
@@ -271,6 +340,25 @@ export default class TrainController {
           editRunning = false;
           break;
       }
+    }
+
+    try {
+      try {
+        await this.service.deleteSpecific(this.filePath, trainToEdit.id);
+      } catch {
+        throw new Error(
+          "Failed to delete existing train before saving updated one"
+        );
+      }
+
+      trainToEdit.id = await this.service.generateID(
+        trainToEdit.name,
+        trainToEdit.route
+      );
+
+      await this.service.save(this.filePath, trainToEdit);
+    } catch {
+      throw new Error("Failed to save train with new wagon");
     }
   }
 }

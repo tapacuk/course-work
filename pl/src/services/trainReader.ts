@@ -1,9 +1,11 @@
 import { question } from "./question";
 import { Seat, Train, TrainService, Wagon } from "course-work-bll";
+import { WagonController } from "./wagonController";
 
 export default class TrainReader {
   private filePath: string;
   private service: any;
+  private wagonController: any;
 
   constructor(filePath = "./trains.json", trainService?: TrainService) {
     this.filePath = filePath;
@@ -13,6 +15,7 @@ export default class TrainReader {
     } catch (error) {
       console.error("Failed to initialize TrainService", error);
     }
+    this.wagonController = new WagonController(this.service, this.filePath);
   }
 
   public async listTrains(): Promise<void> {
@@ -120,26 +123,24 @@ export default class TrainReader {
       const availableSeats = w.seats.length - bookedSeats;
       const bookedPercent = ((bookedSeats / w.seats.length) * 100).toFixed(2);
 
-      console.log(`  > Wagon ID: ${w.id}, Type: ${w.type}`);
       console.log(
-        `    Total seats: ${w.seats.length} / ■ Booked: ${bookedSeats} / □ Available: ${availableSeats} (${bookedPercent}%)`
+        `  — Wagon ID: ${w.id}, Type: ${w.type}, Fullness: ${bookedPercent}%`
       );
-      const seatsInfo = w.seats
-        .map((s, i) =>
-          (i + 1) % 6 === 0
-            ? `${i + 1}. ${s.isBooked ? "■" : "□"}\n        `
-            : `${i + 1}. ${s.isBooked ? "■" : "□"}`
-        )
-        .join("   ");
-
-      console.log(`    Seats: ${seatsInfo}\n`);
+      console.log(
+        `    Total seats: ${w.seats.length} / ■ Booked: ${bookedSeats} / □ Available: ${availableSeats}`
+      );
     });
 
     console.log("> Total ");
     console.log(
       `  Wagons: ${totalWagons} | Seats: ${totalSeats} | Booked: ${totalBooked} seats / ${totalBookedPrecent}%`
     );
-    await question("\nPress Enter to continue...");
+    const inputWagonDetails = await question("\n Look wagon details? (y/n): ");
+
+    if (inputWagonDetails.toLowerCase() === "y") {
+      await this.wagonController.showWagonInfo(trainToShowDetail);
+    }
+    // await question("\nPress Enter to continue...");
     console.clear();
   }
 }
