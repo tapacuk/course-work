@@ -1,6 +1,7 @@
 import { question } from "./question";
 import { Seat, Train, TrainService, Wagon } from "course-work-bll";
 import { WagonController } from "./wagonController";
+import chalk from "chalk";
 
 export default class TrainReader {
   private filePath: string;
