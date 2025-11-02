@@ -1,8 +1,161 @@
 [
   {
-    "id": "TRAIN-A-A",
-    "name": "a",
-    "route": "a",
+    "id": "TRAIN-EXPRESS-LVIV-ODESA",
+    "name": "Express",
+    "route": "Lviv-Odesa",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "plackart",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": true
+          },
+          {
+            "id": 4,
+            "isBooked": true
+          },
+          {
+            "id": 5,
+            "isBooked": true
+          },
+          {
+            "id": 6,
+            "isBooked": true
+          },
+          {
+            "id": 7,
+            "isBooked": true
+          },
+          {
+            "id": 8,
+            "isBooked": true
+          },
+          {
+            "id": 9,
+            "isBooked": true
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "plackart",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-REGIONAL-KHARKIV-POLTAVA",
+    "name": "Regional",
+    "route": "Kharkiv-Poltava",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "coupe",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "econom",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-NIGHTEXPRESS-KYIV-LVIV",
+    "name": "Night Express",
+    "route": "Kyiv-Lviv",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "lux",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "coupe",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-KYIV-PASSANGER-KYIV-DNIPRO",
+    "name": "Kyiv Passanger",
+    "route": "Kyiv-Dnipro",
     "wagons": [
       {
         "id": 1,
@@ -92,6 +245,226 @@
           },
           {
             "id": 10,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-EXPRESS-LVIV-ODESA",
+    "name": "Express",
+    "route": "Lviv-Odesa",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "plackart",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": true
+          },
+          {
+            "id": 4,
+            "isBooked": true
+          },
+          {
+            "id": 5,
+            "isBooked": true
+          },
+          {
+            "id": 6,
+            "isBooked": true
+          },
+          {
+            "id": 7,
+            "isBooked": true
+          },
+          {
+            "id": 8,
+            "isBooked": true
+          },
+          {
+            "id": 9,
+            "isBooked": true
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "plackart",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "type": "sleeper",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          },
+          {
+            "id": 4,
+            "isBooked": false
+          },
+          {
+            "id": 5,
+            "isBooked": false
+          },
+          {
+            "id": 6,
+            "isBooked": false
+          },
+          {
+            "id": 7,
+            "isBooked": false
+          },
+          {
+            "id": 8,
+            "isBooked": false
+          },
+          {
+            "id": 9,
+            "isBooked": false
+          },
+          {
+            "id": 10,
+            "isBooked": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "TRAIN-INTER-ODESA-KRAMATORSK",
+    "name": "Inter",
+    "route": "Odesa-Kramatorsk",
+    "wagons": [
+      {
+        "id": 1,
+        "type": "coupe",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "first-class",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "type": "coupe",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
+            "isBooked": false
+          },
+          {
+            "id": 4,
+            "isBooked": false
+          },
+          {
+            "id": 5,
+            "isBooked": false
+          },
+          {
+            "id": 6,
+            "isBooked": false
+          },
+          {
+            "id": 7,
+            "isBooked": false
+          },
+          {
+            "id": 8,
+            "isBooked": false
+          },
+          {
+            "id": 9,
+            "isBooked": false
+          },
+          {
+            "id": 10,
+            "isBooked": false
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "type": "sleeper",
+        "seats": [
+          {
+            "id": 1,
+            "isBooked": false
+          },
+          {
+            "id": 2,
+            "isBooked": false
+          },
+          {
+            "id": 3,
             "isBooked": false
           }
         ]

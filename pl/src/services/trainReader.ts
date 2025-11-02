@@ -137,10 +137,10 @@ export default class TrainReader {
     );
     const inputWagonDetails = await question("\n Look wagon details? (y/n): ");
 
+    console.clear();
     if (inputWagonDetails.toLowerCase() === "y") {
       await this.wagonController.showWagonInfo(trainToShowDetail);
     }
     // await question("\nPress Enter to continue...");
-    console.clear();
   }
 }

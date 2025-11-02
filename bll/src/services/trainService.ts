@@ -60,16 +60,23 @@ export class TrainService {
     }
   }
 
-  async deleteSpecific(filePath: string, id: string): Promise<boolean> {
+  async deleteSpecific(filePath: string, id: string): Promise<void> {
     const trains = await this.load(filePath);
-    const remaining = trains.filter((t) => t.id !== id);
+    const train = trains.find((t) => t.id === id);
+    if (!train) throw new Error("Train not found");
 
-    if (remaining.length === trains.length) {
-      return false;
-    }
+    const hasBookedSeats = train.wagons.some((w) =>
+      w.seats.some((s) => s.isBooked === true)
+    );
+    if (hasBookedSeats)
+      throw new Error("Cannot delete train: some seats are booked");
+
+    const remaining = trains.filter((t) => t.id !== id);
+    if (remaining.length === trains.length)
+      throw new Error("Failed to delete train (Train is already removed)");
 
     await this.provider.write(filePath, remaining);
-    return true;
+    return;
   }
 
   async generateID(name: string, route: string): Promise<string> {
@@ -77,6 +84,19 @@ export class TrainService {
     const normalizedRoute = route.trim().replace(/\s+/g, "-");
     const id = `TRAIN-${normalizedName}-${normalizedRoute.toUpperCase()}`;
     return id;
+  }
+
+  async findByID(keyword: string): Promise<Train[]> {
+    const trains = ((await this.provider.read(this.filePath)) as Train[]) || [];
+    const normalized = keyword.toUpperCase().trim();
+    const matches = trains.filter((t: Train) =>
+      t.id.toUpperCase().includes(normalized)
+    );
+
+    if (matches.length === 0) {
+      throw new Error("No matches found");
+    }
+    return matches;
   }
 }
 

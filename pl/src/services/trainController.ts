@@ -33,6 +33,7 @@ export default class TrainController {
 
     const wagonsNum = await question("Number of wagons: ");
     if (!wagonsNum || isNaN(Number(wagonsNum)) || Number(wagonsNum) <= 0) {
+      console.clear();
       console.log("Valid number of wagons required.");
       return;
     }
@@ -113,23 +114,19 @@ export default class TrainController {
       return;
     }
 
-    const trains = await this.service.load(this.filePath);
-    const normalized = keyword.toUpperCase().trim();
-    const matches = trains.filter((t: Train) =>
-      t.id.toUpperCase().includes(normalized)
-    );
-
-    if (matches.length === 0) {
+    let matches: Train[] = [];
+    try {
+      matches = await this.service.findByID(keyword);
+    } catch (error: any) {
       console.clear();
-      console.log("No matches found!");
+      console.log(`${error.message}`);
       return;
     }
 
     console.clear();
 
     let choice: any;
-    let running = true;
-    while (running) {
+    while (true) {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
         console.log(`${i + 1}. ${t.id} (${t.name}, ${t.route})`);
@@ -141,7 +138,7 @@ export default class TrainController {
 
       if (Number(choice) === 0) {
         console.clear();
-        console.log("Cancelled.");
+        console.log("Cancelled");
         return;
       }
       if (
@@ -150,39 +147,24 @@ export default class TrainController {
         isNaN(Number(choice))
       ) {
         console.clear();
-        console.log("Invalid choice ");
+        console.log("Invalid choice");
         continue;
       } else {
-        running = false;
+        break;
       }
     }
 
     const index = Number(choice) - 1;
     const trainToDelete = matches[index];
 
-    const hasBookedSeats = trainToDelete.wagons.some((w: Wagon) =>
-      w.seats.some((s: any) => s.isBooked === true)
-    );
-    if (hasBookedSeats) {
-      console.clear();
-      console.log("Cannot delete train: some seats in wagons are booked!");
-      return;
-    }
-
     console.clear();
     try {
-      const deleted = await this.service.deleteSpecific(
-        this.filePath,
-        trainToDelete.id
-      );
-      if (deleted) {
-        console.log(`Train "${trainToDelete.id}" deleted successfully`);
-      } else {
-        console.log("Failed to delete train (Train is already removed)");
-      }
-    } catch {
-      throw new Error("Failed to delete train from file");
+      await this.service.deleteSpecific(this.filePath, trainToDelete.id);
+    } catch (error: any) {
+      console.log(`${error.message}`);
+      return;
     }
+    console.log(`Train "${trainToDelete.id}" deleted successfully`);
   }
 
   public async editTrain(): Promise<void> {
@@ -192,23 +174,19 @@ export default class TrainController {
       return;
     }
 
-    const trains = await this.service.load(this.filePath);
-    const normalized = keyword.toUpperCase().trim();
-    const matches = trains.filter((t: Train) =>
-      t.id.toUpperCase().includes(normalized)
-    );
-
-    if (matches.length === 0) {
+    let matches: Train[] = [];
+    try {
+      matches = await this.service.findByID(keyword);
+    } catch (error: any) {
       console.clear();
-      console.log("No matches found!");
+      console.log(`${error.message}`);
       return;
     }
 
     console.clear();
 
     let choice: any;
-    let runningSearchResults = true;
-    while (runningSearchResults) {
+    while (true) {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
         console.log(`${i + 1}. ${t.id} (${t.name}, ${t.route})`);
@@ -232,7 +210,7 @@ export default class TrainController {
         console.log("Invalid choice ");
         continue;
       } else {
-        runningSearchResults = false;
+        break;
       }
     }
 

@@ -3,3 +3,4 @@ export * from "./models/wagons";
 export * from "./models/seat";
 
 export * from "./services/trainService";
+export * from "./services/wagonService";
