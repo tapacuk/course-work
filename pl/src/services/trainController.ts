@@ -47,6 +47,7 @@ export default class TrainController {
       wagonsType.toLowerCase() !== "coupe" &&
       wagonsType.toLowerCase() !== "berth"
     ) {
+      console.clear();
       console.log("Wagon type isn't valid!");
       return;
     }
@@ -55,6 +56,8 @@ export default class TrainController {
       "\nWant to add custom amount of seats per wagon? (y/n): "
     );
     let seatsPerWagon = 10;
+
+    console.clear();
 
     if (input.toLowerCase() === "y") {
       while (true) {
@@ -101,7 +104,6 @@ export default class TrainController {
 
     try {
       await this.service.save(this.filePath, train);
-      console.clear();
       console.log("Train added successfully.");
     } catch {
       throw new Error("Failed to save train in file");
@@ -131,7 +133,7 @@ export default class TrainController {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
         console.log(
-          `${i + 1}. ${t.name}, ${t.route} ${chalk.gray(`(${t.id})`)}`
+          `${i + 1}) ${chalk.yellowBright("Name:")} ${t.name}, ${chalk.yellowBright("Route:")} ${t.route},  ${chalk.gray(`(${t.id})`)}`
         );
       });
 
@@ -193,7 +195,7 @@ export default class TrainController {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
         console.log(
-          `${i + 1}. ${t.name}, ${t.route} ${chalk.gray(`(${t.id})`)}`
+          `${i + 1}) ${chalk.yellowBright("Name:")} ${t.name}, ${chalk.yellowBright("Route:")} ${t.route} ${chalk.gray(`(${t.id})`)}`
         );
       });
 
@@ -249,6 +251,7 @@ export default class TrainController {
           }
           break;
         case "2":
+          console.clear();
           const newRoute = await question("Enter new route: ");
           if (newRoute) {
             trainToEdit.route = newRoute.trim().replace(/\s+/g, "-");
@@ -260,6 +263,7 @@ export default class TrainController {
           }
           break;
         case "3":
+          console.clear();
           trainToEdit = await this.editWagons(trainToEdit);
           break;
         case "0":
@@ -281,7 +285,6 @@ export default class TrainController {
   }
 
   async editWagons(train: Train): Promise<Train> {
-    console.clear();
     let running = true;
     while (running) {
       console.log("\n-- Wagons Edit Menu --");

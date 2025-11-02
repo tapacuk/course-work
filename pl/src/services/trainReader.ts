@@ -29,10 +29,14 @@ export default class TrainReader {
         console.log("No trains available");
       } else {
         trains.forEach((t: Train) => {
-          console.log(`Name: ${t.name}, Route: ${t.route}, ID: ${t.id}`);
+          console.log(
+            `${chalk.yellowBright("Name:")} ${t.name}, ${chalk.yellowBright("Route:")} ${t.route} ${chalk.gray(`(${t.id})`)}`
+          );
         });
 
-        console.log(`> Total trains: ${trains.length}`);
+        console.log(
+          `${chalk.yellowBright("> Total trains:")} ${trains.length}`
+        );
         await question("\nPress Enter to continue...");
         console.clear();
       }
@@ -61,24 +65,18 @@ export default class TrainReader {
       return;
     }
 
-    const matchesResult = () => {
-      matches.forEach((t: Train, i: number) => {
-        console.log(
-          `${i + 1}. ${t.name}, ${t.route} ${chalk.gray(`(${t.id})`)}`
-        );
-      });
-    };
-
     console.clear();
-    console.log("\nFound trains:");
-    matchesResult();
 
     let choice: any;
     let running = true;
     while (running) {
       console.clear();
-      console.log("\nTrains:");
-      matchesResult();
+      console.log("\nFound trains:");
+      matches.forEach((t: Train, i: number) => {
+        console.log(
+          `${i + 1}) ${chalk.yellowBright("Name:")} ${t.name}, ${chalk.yellowBright("Route:")} ${t.route} ${chalk.gray(`(${t.id})`)}`
+        );
+      });
 
       choice = await question(
         "\nEnter number of train for details (or 0 to exit): "
@@ -118,25 +116,21 @@ export default class TrainReader {
 
     console.clear();
     console.log(`\n-- Details for ${trainToShowDetail.id} --`);
-    console.log(`Name: ${trainToShowDetail.name}`);
-    console.log(`Route: ${trainToShowDetail.route}`);
+    console.log(`${chalk.yellowBright("Name:")} ${trainToShowDetail.name}`);
+    console.log(`${chalk.yellowBright("Route:")} ${trainToShowDetail.route}`);
     console.log("Wagon Details:");
     trainToShowDetail.wagons.forEach((w: Wagon) => {
       const bookedSeats = w.seats.filter((s) => s.isBooked).length;
-      const availableSeats = w.seats.length - bookedSeats;
       const bookedPercent = ((bookedSeats / w.seats.length) * 100).toFixed(2);
 
       console.log(
-        `  — Wagon ID: ${w.id}, Type: ${w.type}, Fullness: ${bookedPercent}%`
-      );
-      console.log(
-        `    Total seats: ${w.seats.length} / ■ Booked: ${bookedSeats} / □ Available: ${availableSeats}`
+        `  — ${chalk.yellowBright("Wagon ID:")} ${w.id}, ${chalk.yellowBright("Type:")} ${w.type}, ${chalk.yellowBright("Total seats:")}, ${w.seats.length} ${chalk.yellowBright("Fullness:")} ${bookedPercent}% `
       );
     });
 
     console.log("> Total ");
     console.log(
-      `  Wagons: ${totalWagons} | Seats: ${totalSeats} | Booked: ${totalBooked} seats / ${totalBookedPrecent}%`
+      `  ${chalk.yellowBright("Wagons:")} ${totalWagons} | ${chalk.yellowBright("Seats:")} ${totalSeats} | ${chalk.yellowBright("Booked:")} ${totalBooked} seats / ${totalBookedPrecent}%`
     );
     const inputWagonDetails = await question("\n Look wagon details? (y/n): ");
 

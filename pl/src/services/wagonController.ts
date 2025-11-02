@@ -1,3 +1,4 @@
+import chalk from "chalk";
 import { question } from "./question";
 import { Train, TrainService, WagonService } from "course-work-bll";
 
@@ -12,7 +13,7 @@ export class WagonController {
   }
 
   public async addWagon(train: Train): Promise<Train> {
-    console.log("\n-- Add Wagon --");
+    console.log(`\n${chalk.gray("-- Add Wagon --")}`);
 
     const wagonType = await question("Wagon type (Sleeper, Coupe, Berth): ");
     const seatsNum = Number(await question("Number of seats: "));
@@ -31,8 +32,12 @@ export class WagonController {
   }
 
   public async deleteWagon(train: Train): Promise<Train> {
-    console.log(`\n-- Wagons from ${train.name} --`);
-    train.wagons.forEach((w) => console.log(`ID: ${w.id}, Type: ${w.type}`));
+    console.log(`\n${chalk.gray(`-- Wagons from ${train.name} --`)}`);
+    train.wagons.forEach((w) =>
+      console.log(
+        `${chalk.yellowBright("ID:")} ${w.id}, ${chalk.yellowBright("Type:")} ${w.type}, ${chalk.yellowBright("Seats:")} ${w.seats.length}`
+      )
+    );
 
     const wagonId = Number(await question("Enter wagon ID to delete: "));
     try {
@@ -45,9 +50,12 @@ export class WagonController {
   }
 
   public async showWagonInfo(train: Train): Promise<void> {
-    console.log(`\n-- Wagons from ${train.name} --`);
+    console.log(`\n${chalk.gray(`-- Wagons from ${train.name} --`)}`);
+
     train.wagons.forEach((w) =>
-      console.log(`ID: ${w.id}, Type: ${w.type}, Seats: ${w.seats.length}`)
+      console.log(
+        `${chalk.yellowBright("ID:")} ${w.id}, ${chalk.yellowBright("Type:")} ${w.type}, ${chalk.yellowBright("Seats:")} ${w.seats.length}`
+      )
     );
 
     const wagonId = Number(await question("\nEnter wagon ID to view: "));
