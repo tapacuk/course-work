@@ -1,6 +1,7 @@
 import { question } from "./question";
 import { Train, TrainService, Wagon } from "course-work-bll";
 import { WagonController } from "./wagonController";
+import chalk from "chalk";
 
 export default class TrainController {
   private filePath: string;
@@ -129,7 +130,9 @@ export default class TrainController {
     while (true) {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
-        console.log(`${i + 1}. ${t.id} (${t.name}, ${t.route})`);
+        console.log(
+          `${i + 1}. ${t.name}, ${t.route} ${chalk.gray(`(${t.id})`)}`
+        );
       });
 
       choice = await question(
@@ -189,7 +192,9 @@ export default class TrainController {
     while (true) {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
-        console.log(`${i + 1}. ${t.id} (${t.name}, ${t.route})`);
+        console.log(
+          `${i + 1}. ${t.name}, ${t.route} ${chalk.gray(`(${t.id})`)}`
+        );
       });
 
       choice = await question(
@@ -221,7 +226,7 @@ export default class TrainController {
     let editRunning = true;
     while (editRunning) {
       console.log(
-        `\n(!) Editing Train: ${trainToEdit.name} ${trainToEdit.route} (${trainToEdit.id})`
+        `\n(!) Editing Train: ${trainToEdit.name} | ${trainToEdit.route}`
       );
       console.log("\nChoose what to edit:");
       console.log("1) Name");
@@ -235,7 +240,7 @@ export default class TrainController {
           console.clear();
           const newName = await question("Enter new name: ");
           if (newName) {
-            trainToEdit.name = newName;
+            trainToEdit.name = newName.trim();
             console.clear();
             console.log("Name updated");
           } else {
@@ -246,7 +251,7 @@ export default class TrainController {
         case "2":
           const newRoute = await question("Enter new route: ");
           if (newRoute) {
-            trainToEdit.route = newRoute;
+            trainToEdit.route = newRoute.trim().replace(/\s+/g, "-");
             console.clear();
             console.log("Route updated");
           } else {
@@ -255,59 +260,8 @@ export default class TrainController {
           }
           break;
         case "3":
-          console.clear();
-          while (true) {
-            console.log("\n-- Wagons Edit Menu --");
-            console.log("1) Add Wagon");
-            console.log("2) Delete Wagon");
-            console.log("3) Show Wagon Info");
-            console.log("\n0) Back to previous menu");
-            const wagonChoice = await question("\nChoose an option > ");
-            switch (wagonChoice) {
-              case "1":
-                console.clear();
-                try {
-                  trainToEdit =
-                    await this.wagonController.addWagon(trainToEdit);
-                  console.log("Wagon added successfully!");
-                } catch {
-                  throw new Error("Failed to add wagon to train");
-                }
-                editRunning = false;
-                break;
-              case "2":
-                console.clear();
-                try {
-                  trainToEdit =
-                    await this.wagonController.deleteWagon(trainToEdit);
-                  console.clear();
-                  console.log("Wagon deleted successfully!");
-                } catch (error: any) {
-                  console.clear();
-                  console.log(`${error.message}`);
-                }
-                editRunning = false;
-                break;
-              case "3":
-                console.clear();
-                try {
-                  await this.wagonController.showWagonInfo(trainToEdit);
-                } catch (error: any) {
-                  console.clear();
-                  console.log(`${error.message}`);
-                }
-                console.clear();
-                editRunning = false;
-                break;
-              case "0":
-                console.clear();
-                return;
-              default:
-                console.clear();
-                console.log("Unknown option.");
-                break;
-            }
-          }
+          trainToEdit = await this.editWagons(trainToEdit);
+          break;
         case "0":
           console.clear();
           editRunning = false;
@@ -315,28 +269,59 @@ export default class TrainController {
         default:
           console.clear();
           console.log("Unknown option.");
-          editRunning = false;
           break;
       }
     }
 
     try {
-      try {
-        await this.service.deleteSpecific(this.filePath, trainToEdit.id);
-      } catch {
-        throw new Error(
-          "Failed to delete existing train before saving updated one"
-        );
-      }
-
-      trainToEdit.id = await this.service.generateID(
-        trainToEdit.name,
-        trainToEdit.route
-      );
-
-      await this.service.save(this.filePath, trainToEdit);
+      await this.service.updateTrain(this.filePath, trainToEdit);
     } catch {
       throw new Error("Failed to save train with new wagon");
     }
+  }
+
+  async editWagons(train: Train): Promise<Train> {
+    console.clear();
+    let running = true;
+    while (running) {
+      console.log("\n-- Wagons Edit Menu --");
+      console.log("1) Add Wagon");
+      console.log("2) Delete Wagon");
+      console.log("3) Show Wagon Info");
+      console.log("\n0) Back to previous menu");
+      const wagonChoice = await question("\nChoose an option > ");
+      console.clear();
+      switch (wagonChoice) {
+        case "1":
+          try {
+            train = await this.wagonController.addWagon(train);
+            console.log("Wagon added successfully!");
+          } catch {
+            throw new Error("Failed to add wagon to train");
+          }
+          break;
+        case "2":
+          try {
+            train = await this.wagonController.deleteWagon(train);
+            console.clear();
+            console.log("Wagon deleted successfully!");
+          } catch (error: any) {
+            console.clear();
+            console.log(`${error.message}`);
+          }
+          break;
+        case "3":
+          await this.wagonController.showWagonInfo(train);
+          break;
+        case "0":
+          console.clear();
+          running = false;
+          break;
+        default:
+          console.log("Unknown option.");
+          break;
+      }
+    }
+    return train;
   }
 }

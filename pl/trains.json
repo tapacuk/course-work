@@ -365,8 +365,8 @@
     ]
   },
   {
-    "id": "TRAIN-INTER-ODESA-KRAMATORSK",
-    "name": "Inter",
+    "id": "TRAIN-UWA-ODESA-KRAMATORSK",
+    "name": "uwa",
     "route": "Odesa-Kramatorsk",
     "wagons": [
       {

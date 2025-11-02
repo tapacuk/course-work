@@ -62,7 +62,9 @@ export default class TrainReader {
 
     const matchesResult = () => {
       matches.forEach((t: Train, i: number) => {
-        console.log(`${i + 1}. ${t.id} (${t.name}, ${t.route})`);
+        console.log(
+          `${i + 1}. ${t.name}, ${t.route} ${chalk.gray(`(${t.id})`)}`
+        );
       });
     };
 

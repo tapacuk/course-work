@@ -98,6 +98,14 @@ export class TrainService {
     }
     return matches;
   }
+
+  async updateTrain(filePath: string, updatedTrain: Train): Promise<void> {
+    const trains = await this.load(filePath);
+    const index = trains.findIndex((t) => t.id === updatedTrain.id);
+    if (index === -1) throw new Error("Train not found");
+    trains[index] = updatedTrain;
+    await this.provider.write(filePath, trains);
+  }
 }
 
 export default TrainService;
