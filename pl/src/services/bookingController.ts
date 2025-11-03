@@ -34,9 +34,9 @@ export class BookingController {
     let trainMatches = [];
     try {
       trainMatches = await this.trainService.findByID(keyword);
-    } catch (error) {
+    } catch (error: any) {
       console.clear();
-      console.log(error);
+      console.error(`${error.message}`);
       return;
     }
 
@@ -141,6 +141,113 @@ export class BookingController {
     } catch (error: any) {
       console.clear();
       console.log(`${error.message}`);
+      return;
+    }
+  }
+
+  public async removeBooking(): Promise<void> {
+    const keyword = await question("Search for a train to remove booking:' ");
+    let trainMatches = [];
+    try {
+      trainMatches = await this.trainService.findByID(keyword);
+    } catch (error: any) {
+      console.clear();
+      console.error(`${error.message}`);
+      return;
+    }
+
+    console.clear();
+    let trainChoice;
+    while (true) {
+      console.log("\nFound trains:");
+      trainMatches.forEach((t, i) => {
+        console.log(
+          `${i + 1}) ${chalk.yellowBright("Name:")} ${t.name}, ${chalk.yellowBright("Route:")} ${t.route} ${chalk.gray(`(${t.id})`)}`
+        );
+      });
+
+      trainChoice = await question(
+        `\nEnter number of train you want to remove booking in (Enter 0 to cancel): `
+      );
+
+      if (Number(trainChoice) === 0) return;
+      if (
+        await this.searchHelper.validateSearchInput(
+          trainChoice,
+          trainMatches.length
+        )
+      ) {
+        console.clear();
+        console.log("Invalid choice.");
+        continue;
+      } else {
+        break;
+      }
+    }
+
+    const index = Number(trainChoice) - 1;
+    const train = trainMatches[index];
+
+    console.clear();
+    const bookingKeyword = await question(
+      "\nSearch for booking to remove (or 0 to cancel): "
+    );
+
+    if (bookingKeyword.trim() === "0") {
+      console.clear();
+      console.log("Cancelled.");
+      return;
+    }
+
+    let bookingMatches: Booking[] = [];
+    try {
+      bookingMatches = await this.service.findBookings(train, bookingKeyword);
+    } catch (error: any) {
+      console.clear();
+      console.error(`${error.message}`);
+      return;
+    }
+
+    let choiceBooking;
+
+    console.clear();
+    while (true) {
+      console.log("\nFound bookings:");
+      bookingMatches.forEach((b: Booking, i) => {
+        console.log(
+          `${i + 1}) Booking for ${chalk.yellowBright(`${b.passengerName}`)} booked ${chalk.yellowBright(`${b.date}`)} ${chalk.gray(`${b.id}`)}`
+        );
+      });
+
+      choiceBooking = await question(
+        "\nSelect booking to remove by entering booking ID (or 0 to cancel): "
+      );
+
+      if (Number(choiceBooking) === 0) return;
+      if (
+        await this.searchHelper.validateSearchInput(
+          choiceBooking,
+          bookingMatches.length
+        )
+      ) {
+        console.clear();
+        console.log("Invalid choice.");
+        continue;
+      } else {
+        break;
+      }
+    }
+
+    const indexBooking = Number(choiceBooking) - 1;
+    const booking = bookingMatches[indexBooking];
+
+    try {
+      await this.service.removeBooking(train, booking.id);
+      console.clear();
+      console.log("Booking removed successfully.");
+    } catch (error: any) {
+      console.clear();
+      console.error(`${error.message}`);
       return;
     }
   }

@@ -19,6 +19,10 @@ export async function menuBooking(): Promise<void> {
         console.clear();
         await bookingController.addBooking();
         break;
+      case "2":
+        console.clear();
+        await bookingController.removeBooking();
+        break;
       case "0":
         console.clear();
         running = false;

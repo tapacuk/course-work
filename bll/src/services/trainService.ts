@@ -24,7 +24,7 @@ export class TrainService {
               id: s.id,
               isBooked: s.isBooked,
               ...(s.isBooked && s.booking
-                ? { booking: new Booking(s.booking) }
+                ? { booking: [new Booking(s.booking)] }
                 : {}),
             })
         );

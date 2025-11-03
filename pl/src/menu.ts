@@ -10,7 +10,7 @@ export default class Menu {
       console.clear();
       console.log("\n===== Menu =====");
       console.log("1) Manage Trains");
-      console.log("2) Manage Bookings (Coming Soon)");
+      console.log("2) Manage Bookings");
       console.log("\n0) Exit");
       const choice = await question("\nChoose an option: ");
       switch (choice) {

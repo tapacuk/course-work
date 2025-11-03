@@ -17,7 +17,7 @@ export class BookingService {
     train: Train,
     wagon: Wagon,
     seat: Seat,
-    name: string
+    passanger: string
   ): Promise<void> {
     seat.isBooked = true;
     const date = new Date();
@@ -25,8 +25,8 @@ export class BookingService {
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
 
-    const id = await this.generateBookingID(train, wagon, seat);
-    const passengerName = name;
+    const id = await this.generateBookingID(train, wagon, seat, passanger);
+    const passengerName = passanger;
     const stringDate = `${day}.${month}.${year}`;
     const booking: Booking = { id, passengerName, date: stringDate };
 
@@ -53,14 +53,69 @@ export class BookingService {
     return seat;
   }
 
+  async removeBooking(train: Train, bookingId: string): Promise<void> {
+    for (const wagon of train.wagons) {
+      for (const seat of wagon.seats) {
+        if (seat.booking) {
+          const bookingIndex = seat.booking.findIndex(
+            (b) => b.id === bookingId
+          );
+          if (bookingIndex !== -1) {
+            seat.booking.splice(bookingIndex, 1);
+            seat.isBooked = false;
+            const trainUpdates = train.wagons.map((w) => {
+              if (w.id === wagon.id) {
+                return wagon;
+              }
+              return w;
+            });
+
+            train.wagons = trainUpdates;
+            await this.trainService.updateTrain(this.filePath, train);
+            return;
+          }
+        }
+      }
+    }
+    throw new Error("Booking not found");
+  }
+
+  async findBookings(train: Train, keyword: string): Promise<Booking[]> {
+    if (!keyword) throw new Error("Invalid search keyword");
+    const normalized = keyword.toUpperCase().trim();
+    const results: Booking[] = [];
+
+    for (const wagon of train.wagons) {
+      for (const seat of wagon.seats) {
+        if (!seat.booking) continue;
+        const matches = seat.booking.filter(
+          (b) =>
+            b.id.toUpperCase().includes(normalized) ||
+            String(b.passengerName ?? "")
+              .toUpperCase()
+              .includes(normalized)
+        );
+        if (matches.length) results.push(...matches);
+      }
+    }
+
+    if (results.length === 0) throw new Error("Bookings not found");
+    return results;
+  }
+
   async generateBookingID(
     train: Train,
     wagon: Wagon,
-    seat: Seat
+    seat: Seat,
+    passanger: string
   ): Promise<string> {
-    const normalizedName = train.name.toUpperCase().trim().replace(/\s+/g, "-");
+    const normalizedTrainName = train.name
+      .toUpperCase()
+      .trim()
+      .replace(/\s+/g, "-");
     const normalizedWagonType = wagon.type.toUpperCase().trim();
-    return `${normalizedName}-${wagon.id}-${normalizedWagonType}-${seat.id}`;
+    const normalizedPassangerName = passanger.toUpperCase().trim();
+    return `${normalizedTrainName}-WAGON${wagon.id}-${normalizedWagonType}-SEAT${seat.id}-${normalizedPassangerName}`;
   }
 }
 
