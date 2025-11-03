@@ -30,7 +30,7 @@ export class BookingController {
   }
 
   public async addBooking(): Promise<void> {
-    const keyword = await question("Search for a train for booking:' ");
+    const keyword = await question("Search for a train for booking: ");
     let trainMatches = [];
     try {
       trainMatches = await this.trainService.findByID(keyword);
@@ -161,9 +161,7 @@ export class BookingController {
       bookingMatches = await this.service.findBookings(bookingKeyword);
     } catch (error: any) {
       console.clear();
-
-      console.log(error);
-      // console.error(`${error.message}`);
+      console.error(`${error.message}`);
       return;
     }
 
@@ -174,7 +172,7 @@ export class BookingController {
       console.log("\nFound bookings:");
       bookingMatches.forEach((b: Booking, i) => {
         console.log(
-          `${i + 1}) Booking for ${chalk.yellowBright(`${b.passengerName}`)} booked ${chalk.yellowBright(`${b.date}`)} ${chalk.gray(`${b.id}`)}`
+          `${i + 1}) Booking for ${chalk.yellowBright(`${b.passengerName}`)} for ${chalk.yellowBright(`${b.date}`)} ${chalk.gray(`${b.id}`)}`
         );
       });
 
@@ -253,7 +251,7 @@ export class BookingController {
       console.log("\nFound bookings:");
       bookingMatches.forEach((b: Booking, i) => {
         console.log(
-          `${i + 1}) Booking for ${chalk.yellowBright(`${b.passengerName}`)} booked ${chalk.yellowBright(`${b.date}`)} ${chalk.gray(`${b.id}`)}`
+          `${i + 1}) Booking for ${chalk.yellowBright(`${b.passengerName}`)} for ${chalk.yellowBright(`${b.date}`)} ${chalk.gray(`${b.id}`)}`
         );
       });
 

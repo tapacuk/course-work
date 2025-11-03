@@ -1,7 +1,9 @@
 import { BookingController } from "./services/bookingController";
+import BookingReader from "./services/bookingReader";
 import { question } from "./services/question";
 
 const bookingController = new BookingController();
+const bookingReader = new BookingReader();
 
 export async function menuBooking(): Promise<void> {
   console.clear();
@@ -22,6 +24,41 @@ export async function menuBooking(): Promise<void> {
       case "2":
         console.clear();
         await bookingController.removeBooking();
+        break;
+      case "3":
+        console.clear();
+        console.log("Booking editing not implemented yet.");
+        break;
+      case "4":
+        console.clear();
+        let runningInfo = true;
+        while (runningInfo) {
+          console.log("\n-- Bookings Info Menu --");
+          console.log("1) List All Bookings");
+          console.log("2) Search Bookings");
+          console.log("\n0) Back to previous menu");
+          const infoChoice = await question("\nChoose an option > ");
+
+          switch (infoChoice) {
+            case "1":
+              console.clear();
+              await bookingReader.listBookings();
+              console.clear();
+              break;
+            case "2":
+              console.clear();
+              await bookingReader.searchBookings();
+              console.clear();
+              break;
+            case "0":
+              console.clear();
+              runningInfo = false;
+              break;
+            default:
+              console.clear();
+              console.log("Unknown option.");
+          }
+        }
         break;
       case "0":
         console.clear();

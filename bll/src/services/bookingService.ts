@@ -21,14 +21,10 @@ export class BookingService {
     passanger: string
   ): Promise<void> {
     seat.isBooked = true;
-    const date = new Date();
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-
+    const stringDate = await this.generateDateString(-6);
     const id = await this.generateBookingID(train, wagon, seat, passanger);
     const passengerName = passanger;
-    const stringDate = `${day}.${month}.${year}`;
+
     const booking: Booking = { id, passengerName, date: stringDate };
 
     if (!seat.booking) {
@@ -109,6 +105,33 @@ export class BookingService {
     return results;
   }
 
+  async loadBookings(): Promise<Booking[]> {
+    const trains = await this.trainService.load(this.filePath);
+    const bookings: Booking[] = [];
+    for (const train of trains) {
+      for (const wagon of train.wagons) {
+        for (const seat of wagon.seats) {
+          if (seat.booking && seat.booking.length > 0) {
+            bookings.push(...seat.booking);
+          }
+        }
+      }
+    }
+    if (bookings.length === 0) throw new Error("No bookings found");
+    return bookings;
+  }
+
+  async generateDateString(shift: number): Promise<string> {
+    const date = new Date();
+    date.setDate(date.getDate() + shift);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    const stringDate = `${day}.${month}.${year}`;
+    return stringDate;
+  }
+
   async generateBookingID(
     train: Train,
     wagon: Wagon,
@@ -120,7 +143,10 @@ export class BookingService {
       .trim()
       .replace(/\s+/g, "-");
     const normalizedWagonType = wagon.type.toUpperCase().trim();
-    const normalizedPassangerName = passanger.toUpperCase().trim();
+    const normalizedPassangerName = passanger
+      .toUpperCase()
+      .trim()
+      .replace(/\s+/g, "-");
     return `${normalizedTrainName}-WAGON${wagon.id}-${normalizedWagonType}-SEAT${seat.id}-${normalizedPassangerName}`;
   }
 }
