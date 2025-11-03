@@ -1,5 +1,5 @@
 import { question } from "./question";
-import { Seat, Train, TrainService, Wagon } from "course-work-bll";
+import { Train, TrainService, Wagon, SearchHelper } from "course-work-bll";
 import { WagonController } from "./wagonController";
 import chalk from "chalk";
 
@@ -7,6 +7,7 @@ export default class TrainReader {
   private filePath: string;
   private service: any;
   private wagonController: any;
+  private searchHelper: SearchHelper;
 
   constructor(filePath = "./trains.json", trainService?: TrainService) {
     this.filePath = filePath;
@@ -16,7 +17,8 @@ export default class TrainReader {
     } catch (error) {
       console.error("Failed to initialize TrainService", error);
     }
-    this.wagonController = new WagonController(this.service, this.filePath);
+    this.wagonController = new WagonController();
+    this.searchHelper = new SearchHelper();
   }
 
   public async listTrains(): Promise<void> {
@@ -52,16 +54,12 @@ export default class TrainReader {
       return;
     }
 
-    const trains = await this.service.load(this.filePath);
-    const normalized = keyword.toUpperCase().trim();
-    const matches = trains.filter((t: Train) =>
-      t.id.toUpperCase().includes(normalized)
-    );
-
-    if (matches.length === 0) {
+    let matches: Train[] = [];
+    try {
+      matches = await this.service.findByID(keyword);
+    } catch (error) {
       console.clear();
-      console.log("No matching trains found.");
-      await question("\nPress Enter to continue...");
+      console.log(error);
       return;
     }
 
@@ -69,8 +67,7 @@ export default class TrainReader {
 
     let choice: any;
     let running = true;
-    while (running) {
-      console.clear();
+    while (true) {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
         console.log(
@@ -82,21 +79,13 @@ export default class TrainReader {
         "\nEnter number of train for details (or 0 to exit): "
       );
 
-      if (Number(choice) === 0) {
-        console.clear();
-        console.log("Cancelled.");
-        return;
-      }
-      if (
-        Number(choice) < 0 ||
-        Number(choice) - 1 >= matches.length ||
-        isNaN(Number(choice))
-      ) {
+      if (Number(choice) === 0) return;
+      if (await this.searchHelper.validateSearchInput(choice, matches.length)) {
         console.clear();
         console.log("Invalid choice.");
         continue;
       } else {
-        running = false;
+        break;
       }
     }
 

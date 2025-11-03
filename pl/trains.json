@@ -10,11 +10,25 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-1-PLACKART-1",
+                "passengerName": "Inna Gerych",
+                "date": "03.11.2025"
+              }
+            ]
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-1-PLACKART-2",
+                "passengerName": "Inna Gerych",
+                "date": "03.11.2025"
+              }
+            ]
           },
           {
             "id": 3,

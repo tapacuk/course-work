@@ -12,6 +12,7 @@ export class WagonService {
     const seats = Array.from({ length: seatsNum }, (_, i) => ({
       id: i + 1,
       isBooked: false,
+      booking: [],
     }));
 
     const newWagon = new Wagon({
@@ -55,4 +56,13 @@ export class WagonService {
     ${chalk.yellowBright("Total Seats:")} ${wagon.seats.length} ${chalk.gray("/")} ${chalk.yellowBright("■ Booked:")} ${bookedSeats} ${chalk.gray("/")} ${chalk.yellowBright("□ Available:")} ${availableSeats}
     ${chalk.yellowBright("Seats:")} ${seatsInfo}`;
   }
+
+  findById(train: Train, wagonId: number): Wagon {
+    if (wagonId < 0 || isNaN(wagonId)) throw new Error("Invalid wagon ID");
+    const wagon = train.wagons.find((w) => w.id === wagonId);
+    if (!wagon) throw new Error("Wagon not found");
+    return wagon;
+  }
 }
+
+export default WagonService;

@@ -5,10 +5,7 @@ import { Train, TrainService, WagonService } from "course-work-bll";
 export class WagonController {
   private wagonService: WagonService;
 
-  constructor(
-    private service: TrainService,
-    private filePath = "./trains.json"
-  ) {
+  constructor() {
     this.wagonService = new WagonService();
   }
 

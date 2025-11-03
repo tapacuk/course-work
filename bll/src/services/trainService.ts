@@ -1,6 +1,7 @@
 import { Train } from "../models/train";
 import { Wagon } from "../models/wagons";
 import { Seat } from "../models/seat";
+import { Booking } from "../models/booking";
 import { JSONProvider } from "course-work-dal";
 
 export class TrainService {
@@ -18,7 +19,14 @@ export class TrainService {
     return raw.map((r: Train) => {
       const wagons: Wagon[] = (r.wagons || []).map((w: any) => {
         const seats: Seat[] = (w.seats || []).map(
-          (s: any) => new Seat({ id: s.id, isBooked: s.isBooked })
+          (s: any) =>
+            new Seat({
+              id: s.id,
+              isBooked: s.isBooked,
+              ...(s.isBooked && s.booking
+                ? { booking: new Booking(s.booking) }
+                : {}),
+            })
         );
         return new Wagon({ id: w.id, type: w.type, seats });
       });
@@ -37,7 +45,11 @@ export class TrainService {
       wagons: train.wagons.map((w) => ({
         id: w.id,
         type: w.type,
-        seats: w.seats.map((s) => ({ id: s.id, isBooked: s.isBooked })),
+        seats: w.seats.map((s) => ({
+          id: s.id,
+          isBooked: s.isBooked,
+          ...(s.booking ? { booking: { ...s.booking } } : {}),
+        })),
       })),
     };
     const toSave = Array.isArray(existing) ? [...existing, item] : [item];

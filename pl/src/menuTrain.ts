@@ -13,7 +13,7 @@ export async function menuTrain(): Promise<void> {
     console.log("1) Add Train");
     console.log("2) Remove Train");
     console.log("3) Edit Train");
-    console.log("4) Look for Trains");
+    console.log("4) Trains Info");
     console.log("\n0) Back to Main Menu");
     const trainChoice = await question("\nChoose an option: ");
     switch (trainChoice) {

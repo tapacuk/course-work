@@ -1,3 +1,4 @@
+import { menuBooking } from "./menuBooking";
 import { menuTrain } from "./menuTrain";
 import { question } from "./services/question";
 
@@ -17,9 +18,7 @@ export default class Menu {
           await menuTrain();
           break;
         case "2":
-          console.clear();
-          console.log("Booking management is coming soon!");
-          await question("\nPress Enter to continue...");
+          await menuBooking();
           break;
         case "0":
           console.clear();

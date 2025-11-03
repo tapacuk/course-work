@@ -1,5 +1,5 @@
 import { question } from "./question";
-import { Train, TrainService, Wagon } from "course-work-bll";
+import { Booking, Train, TrainService, Wagon } from "course-work-bll";
 import { WagonController } from "./wagonController";
 import chalk from "chalk";
 
@@ -16,7 +16,7 @@ export default class TrainController {
     } catch {
       throw new Error("Failed to initialize TrainService");
     }
-    this.wagonController = new WagonController(this.service);
+    this.wagonController = new WagonController();
   }
 
   public async addTrain(): Promise<void> {
@@ -84,7 +84,7 @@ export default class TrainController {
     wagonsType.toLowerCase().trim();
 
     for (let j = 0; j < seatsPerWagon; j++) {
-      seats.push({ id: j + 1, isBooked: false });
+      seats.push({ id: j + 1, isBooked: false, booking: [] as any });
     }
     for (let i = 0; i < Number(wagonsNum); i++) {
       wagons.push(
@@ -128,7 +128,7 @@ export default class TrainController {
 
     console.clear();
 
-    let choice: any;
+    let choice: number;
     while (true) {
       console.log("\nFound trains:");
       matches.forEach((t: Train, i: number) => {
@@ -137,20 +137,16 @@ export default class TrainController {
         );
       });
 
-      choice = await question(
-        "\nEnter number of train to delete (or 0 to cancel): "
+      choice = Number(
+        await question("\nEnter number of train to delete (or 0 to cancel): ")
       );
 
-      if (Number(choice) === 0) {
+      if (choice === 0) {
         console.clear();
         console.log("Cancelled");
         return;
       }
-      if (
-        Number(choice) < 0 ||
-        Number(choice) - 1 >= matches.length ||
-        isNaN(Number(choice))
-      ) {
+      if (choice < 0 || choice - 1 >= matches.length || isNaN(choice)) {
         console.clear();
         console.log("Invalid choice");
         continue;
@@ -159,7 +155,7 @@ export default class TrainController {
       }
     }
 
-    const index = Number(choice) - 1;
+    const index = choice - 1;
     const trainToDelete = matches[index];
 
     console.clear();
