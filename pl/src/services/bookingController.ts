@@ -118,7 +118,6 @@ export class BookingController {
         console.error(`${error.message}`);
         continue;
       }
-
       break;
     }
 
@@ -211,70 +210,120 @@ export class BookingController {
 
   public async editBooking(): Promise<void> {
     const keyword = await question(
-      "Search for a train where to edit booking:' "
+      "Search for a booking to edit (Enter id, Passanger Name or Date / 0 for return): "
     );
-    let trainMatches = [];
+    if (keyword === "0") return;
+
+    console.clear();
+
+    let bookingMatches = [];
     try {
-      trainMatches = await this.trainService.findByID(keyword);
+      bookingMatches = await this.service.findBookings(keyword);
     } catch (error: any) {
       console.clear();
       console.error(`${error.message}`);
       return;
     }
 
-    console.clear();
-
-    console.clear();
-    const bookingKeyword = await question(
-      "\nSearch for booking to remove (or 0 to cancel): "
-    );
-
-    if (bookingKeyword.trim() === "0") {
-      console.clear();
-      console.log("Cancelled.");
-      return;
-    }
-
-    let bookingMatches: Booking[] = [];
-    try {
-      bookingMatches = await this.service.findBookings(bookingKeyword);
-    } catch (error: any) {
-      console.clear();
-      console.error(`${error.message}`);
-      return;
-    }
-
-    let choiceBooking;
-
-    console.clear();
-    while (true) {
-      console.log("\nFound bookings:");
-      bookingMatches.forEach((b: Booking, i) => {
-        console.log(
-          `${i + 1}) Booking for ${chalk.yellowBright(`${b.passengerName}`)} for ${chalk.yellowBright(`${b.date}`)} ${chalk.gray(`${b.id}`)}`
-        );
-      });
-
-      choiceBooking = await question(
-        "\nSelect booking to remove by entering booking ID (or 0 to cancel): "
+    bookingMatches.forEach((b, i) => {
+      console.log(
+        `${i + 1}) Booking for ${chalk.yellowBright(`${b.passengerName}`)} for ${chalk.yellowBright(`${b.date}`)} ${chalk.gray(`${b.id}`)}`
       );
+    });
 
-      if (Number(choiceBooking) === 0) return;
-      if (
-        await this.searchHelper.validateSearchInput(
-          choiceBooking,
-          bookingMatches.length
-        )
-      ) {
-        console.clear();
-        console.log("Invalid choice.");
-        continue;
-      } else {
-        break;
+    const choice = await question(
+      "\n Enter id of booking to edit (or 0 to cancel): "
+    );
+    if (choice === "0") return;
+
+    try {
+      this.searchHelper.validateSearchInput(choice, bookingMatches.length);
+    } catch (error: any) {
+      console.clear();
+      console.error(`${error.message}`);
+      return;
+    }
+    console.clear();
+
+    const index = Number(choice) - 1;
+    let bookingToEdit = bookingMatches[index];
+
+    let editRunning = true;
+    while (editRunning) {
+      console.log(
+        `\nEditing booking for ${chalk.yellowBright(`${bookingToEdit.passengerName}`)} for ${chalk.yellowBright(`${bookingToEdit.date}`)} ${chalk.gray(`${bookingToEdit.id}`)}`
+      );
+      console.log("1) Edit Passenger Name");
+      console.log("2) Edit Date");
+      console.log("\n0) Cancel");
+      const input = await question("Choose an option to edit: ");
+      switch (input) {
+        case "1":
+          console.clear();
+          console.log(
+            "Current Passenger Name: " +
+              chalk.yellowBright(bookingToEdit.passengerName)
+          );
+
+          const newName = await question("\nEnter new passenger name: ");
+          try {
+            const newID = await this.service.updateBookingID(
+              bookingToEdit,
+              newName
+            );
+            bookingToEdit.passengerName = newName.trim();
+            bookingToEdit.id = newID;
+          } catch (error: any) {
+            console.clear();
+            console.error(`${error.message}`);
+            continue;
+          }
+          console.clear();
+          console.log("Passenger name updated successfully");
+          break;
+        case "2":
+          console.clear();
+          console.log(
+            "Current date: " + chalk.yellowBright(bookingToEdit.date)
+          );
+          console.log(
+            chalk.gray(
+              "For date shift use numbers: 4 for 4 days later, -2 for 2 days earlier"
+            )
+          );
+          const newDate = await question("\nEnter date shift: ");
+          try {
+            const newDateShift = await this.service.generateDateString(
+              Number(newDate)
+            );
+            bookingToEdit.date = newDateShift;
+          } catch (error: any) {
+            console.clear();
+            console.error(`${error.message}`);
+            continue;
+          }
+          console.clear();
+          console.log("Date updated successfully");
+          break;
+        case "0":
+          console.clear();
+          console.log("Cancelled");
+          editRunning = false;
+          return;
+        default:
+          console.clear();
+          console.log("Unknown option");
       }
     }
 
-    const indexBooking = Number(choiceBooking) - 1;
-    const booking = bookingMatches[indexBooking];
+    try {
+      await this.service.updateBooking(bookingToEdit);
+      console.clear();
+      console.log("Booking updated successfully.");
+    } catch (error: any) {
+      console.clear();
+      console.error(error);
+      return;
+    }
   }
 }

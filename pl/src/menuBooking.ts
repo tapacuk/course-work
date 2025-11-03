@@ -27,7 +27,7 @@ export async function menuBooking(): Promise<void> {
         break;
       case "3":
         console.clear();
-        console.log("Booking editing not implemented yet.");
+        await bookingController.editBooking();
         break;
       case "4":
         console.clear();
