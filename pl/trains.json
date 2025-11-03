@@ -10,42 +10,78 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false,
-            "booking": []
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W1-SEAT1-IVAN PETRENKO",
+                "passengerName": "Ivan Petrenko",
+                "date": "02.11.2025"
+              }
+            ]
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 3,
-            "isBooked": false,
-            "booking": []
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W1-SEAT3-OLENA KOVAL",
+                "passengerName": "Olena Koval",
+                "date": "05.11.2025"
+              }
+            ]
           },
           {
             "id": 4,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 5,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W1-SEAT5-MYKOLA HRYN",
+                "passengerName": "Mykola Hryn",
+                "date": "10.11.2025"
+              }
+            ]
           },
           {
             "id": 6,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 7,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W1-SEAT7-DARIA SYDOR",
+                "passengerName": "Daria Sydor",
+                "date": "11.11.2025"
+              }
+            ]
           },
           {
             "id": 8,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 9,
-            "isBooked": false,
-            "booking": []
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W1-SEAT9-VLAD YURCHENKO",
+                "passengerName": "Vlad Yurchenko",
+                "date": "04.11.2025"
+              }
+            ]
           }
         ]
       },
@@ -60,12 +96,19 @@
           },
           {
             "id": 2,
-            "isBooked": false,
-            "booking": []
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W2-SEAT2-ANNA ROMANOVA",
+                "passengerName": "Anna Romanova",
+                "date": "06.11.2025"
+              }
+            ]
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           }
         ]
       }
@@ -82,15 +125,30 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "REGIONAL-W1-SEAT1-SERGII MELNYK",
+                "passengerName": "Sergii Melnyk",
+                "date": "01.11.2025"
+              }
+            ]
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "REGIONAL-W1-SEAT2-ANDREW NIKOGOVYCH",
+                "passengerName": "Andrew Nikogovych",
+                "date": "03.11.2025"
+              }
+            ]
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           }
         ]
       },
@@ -100,15 +158,24 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "REGIONAL-W2-SEAT2-IRYNA KARPENKO",
+                "passengerName": "Iryna Karpenko",
+                "date": "07.11.2025"
+              }
+            ]
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           }
         ]
       }
@@ -125,15 +192,30 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "NIGHTEXPRESS-W1-SEAT1-MARTA LYSENKO",
+                "passengerName": "Marta Lysenko",
+                "date": "09.11.2025"
+              }
+            ]
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "NIGHTEXPRESS-W1-SEAT3-TARAS BILENKYI",
+                "passengerName": "Taras Bilenkyi",
+                "date": "08.11.2025"
+              }
+            ]
           }
         ]
       },
@@ -143,15 +225,24 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "NIGHTEXPRESS-W2-SEAT2-OKSANA IVANOVA",
+                "passengerName": "Oksana Ivanova",
+                "date": "11.11.2025"
+              }
+            ]
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           }
         ]
       }
@@ -168,43 +259,77 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W1-SEAT2-MYROSLAV DANYLUK",
+                "passengerName": "Myroslav Danyluh",
+                "date": "05.11.2025"
+              }
+            ]
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 4,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W1-SEAT4-SOFIIA KRAVETS",
+                "passengerName": "Sofiia Kravets",
+                "date": "06.11.2025"
+              }
+            ]
           },
           {
             "id": 5,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 6,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W1-SEAT6-IVAN SHEVCHUK",
+                "passengerName": "Ivan Shevchuk",
+                "date": "02.11.2025"
+              }
+            ]
           },
           {
             "id": 7,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 8,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 9,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W1-SEAT9-NATALIIA DUBOVYK",
+                "passengerName": "Nataliia Dubovyk",
+                "date": "09.11.2025"
+              }
+            ]
           },
           {
             "id": 10,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           }
         ]
       },
@@ -214,43 +339,77 @@
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W2-SEAT1-ANDRII KULYK",
+                "passengerName": "Andrii Kulyk",
+                "date": "07.11.2025"
+              }
+            ]
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 4,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W2-SEAT4-VALERIIA HONCHAR",
+                "passengerName": "Valeriia Honchar",
+                "date": "10.11.2025"
+              }
+            ]
           },
           {
             "id": 5,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 6,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W2-SEAT6-YAROSLAV PETRUK",
+                "passengerName": "Yaroslav Petruk",
+                "date": "03.11.2025"
+              }
+            ]
           },
           {
             "id": 7,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 8,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "KYIVPASS-W2-SEAT8-OLHA VASYLCHUK",
+                "passengerName": "Olha Vasylchuk",
+                "date": "04.11.2025"
+              }
+            ]
           },
           {
             "id": 9,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 10,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           }
         ]
       }
@@ -262,108 +421,82 @@
     "route": "Lviv-Odesa",
     "wagons": [
       {
-        "id": 1,
-        "type": "plackart",
-        "seats": [
-          {
-            "id": 1,
-            "isBooked": false
-          },
-          {
-            "id": 2,
-            "isBooked": false
-          },
-          {
-            "id": 3,
-            "isBooked": false
-          },
-          {
-            "id": 4,
-            "isBooked": false
-          },
-          {
-            "id": 5,
-            "isBooked": false
-          },
-          {
-            "id": 6,
-            "isBooked": false
-          },
-          {
-            "id": 7,
-            "isBooked": false
-          },
-          {
-            "id": 8,
-            "isBooked": false
-          },
-          {
-            "id": 9,
-            "isBooked": false
-          }
-        ]
-      },
-      {
-        "id": 2,
-        "type": "plackart",
-        "seats": [
-          {
-            "id": 1,
-            "isBooked": false
-          },
-          {
-            "id": 2,
-            "isBooked": false
-          },
-          {
-            "id": 3,
-            "isBooked": false
-          }
-        ]
-      },
-      {
         "id": 3,
         "type": "sleeper",
         "seats": [
           {
             "id": 1,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W3-SEAT1-LEONID MOROZ",
+                "passengerName": "Leonid Moroz",
+                "date": "11.11.2025"
+              }
+            ]
           },
           {
             "id": 2,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 3,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W3-SEAT3-VIKTORIIA BONDAR",
+                "passengerName": "Viktoriia Bondar",
+                "date": "08.11.2025"
+              }
+            ]
           },
           {
             "id": 4,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 5,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 6,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W3-SEAT6-DENYS KARPENKO",
+                "passengerName": "Denys Karpenko",
+                "date": "10.11.2025"
+              }
+            ]
           },
           {
             "id": 7,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 8,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           },
           {
             "id": 9,
-            "isBooked": false
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "EXPRESS-W3-SEAT9-LIUBOV YAKYMENKO",
+                "passengerName": "Liubov Yakymenko",
+                "date": "02.11.2025"
+              }
+            ]
           },
           {
             "id": 10,
-            "isBooked": false
+            "isBooked": false,
+            "booking": []
           }
         ]
       }

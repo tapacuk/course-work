@@ -16,16 +16,25 @@ export class TrainService {
   async load(filePath: string): Promise<Train[]> {
     const raw = (await this.provider.read(filePath)) as any[];
 
-    return raw.map((r: Train) => {
+    return raw.map((r: any) => {
       const wagons: Wagon[] = (r.wagons || []).map((w: any) => {
         const seats: Seat[] = (w.seats || []).map(
           (s: any) =>
             new Seat({
               id: s.id,
               isBooked: s.isBooked,
-              ...(s.isBooked && s.booking
-                ? { booking: [new Booking(s.booking)] }
-                : {}),
+              ...(s.booking
+                ? {
+                    booking: (s.booking as any[]).map(
+                      (b: any) =>
+                        new Booking({
+                          id: b.id,
+                          passengerName: b.passengerName,
+                          date: b.date,
+                        })
+                    ),
+                  }
+                : { booking: [] }),
             })
         );
         return new Wagon({ id: w.id, type: w.type, seats });
@@ -48,7 +57,15 @@ export class TrainService {
         seats: w.seats.map((s) => ({
           id: s.id,
           isBooked: s.isBooked,
-          ...(s.booking ? { booking: { ...s.booking } } : {}),
+          ...(s.booking
+            ? {
+                booking: s.booking.map((b) => ({
+                  id: b.id,
+                  passengerName: b.passengerName,
+                  date: b.date,
+                })),
+              }
+            : { booking: [] }),
         })),
       })),
     };

@@ -3,6 +3,7 @@ import TrainService from "./trainService";
 import { Seat } from "src/models/seat";
 import { Train } from "src/models/train";
 import { Booking } from "src/models/booking";
+import { file } from "bun";
 
 export class BookingService {
   filePath: string;
@@ -53,26 +54,29 @@ export class BookingService {
     return seat;
   }
 
-  async removeBooking(train: Train, bookingId: string): Promise<void> {
-    for (const wagon of train.wagons) {
-      for (const seat of wagon.seats) {
-        if (seat.booking) {
-          const bookingIndex = seat.booking.findIndex(
-            (b) => b.id === bookingId
-          );
-          if (bookingIndex !== -1) {
-            seat.booking.splice(bookingIndex, 1);
-            seat.isBooked = false;
-            const trainUpdates = train.wagons.map((w) => {
-              if (w.id === wagon.id) {
-                return wagon;
-              }
-              return w;
-            });
+  async removeBooking(bookingId: string): Promise<void> {
+    const trains = await this.trainService.load(this.filePath);
+    for (const train of trains) {
+      for (const wagon of train.wagons) {
+        for (const seat of wagon.seats) {
+          if (seat.booking) {
+            const bookingIndex = seat.booking.findIndex(
+              (b: Booking) => b.id === bookingId
+            );
+            if (bookingIndex !== -1) {
+              seat.booking.splice(bookingIndex, 1);
+              seat.isBooked = false;
+              const trainUpdates = train.wagons.map((w: Wagon) => {
+                if (w.id === wagon.id) {
+                  return wagon;
+                }
+                return w;
+              });
 
-            train.wagons = trainUpdates;
-            await this.trainService.updateTrain(this.filePath, train);
-            return;
+              train.wagons = trainUpdates;
+              await this.trainService.updateTrain(this.filePath, train);
+              return;
+            }
           }
         }
       }
@@ -80,22 +84,24 @@ export class BookingService {
     throw new Error("Booking not found");
   }
 
-  async findBookings(train: Train, keyword: string): Promise<Booking[]> {
-    if (!keyword) throw new Error("Invalid search keyword");
+  async findBookings(keyword: string): Promise<Booking[]> {
+    const trains = await this.trainService.load(this.filePath);
+    if (!keyword || typeof keyword !== "string")
+      throw new Error("Invalid search keyword");
     const normalized = keyword.toUpperCase().trim();
     const results: Booking[] = [];
 
-    for (const wagon of train.wagons) {
-      for (const seat of wagon.seats) {
-        if (!seat.booking) continue;
-        const matches = seat.booking.filter(
-          (b) =>
-            b.id.toUpperCase().includes(normalized) ||
-            String(b.passengerName ?? "")
-              .toUpperCase()
-              .includes(normalized)
-        );
-        if (matches.length) results.push(...matches);
+    for (const train of trains) {
+      for (const wagon of train.wagons) {
+        for (const seat of wagon.seats) {
+          if (!seat.booking || seat.booking.length === 0) continue;
+          const matches = seat.booking.filter((b: Booking) => {
+            const combined =
+              `${b.id || ""} ${b.passengerName || ""} ${b.date || ""}`.toUpperCase();
+            return combined.includes(normalized);
+          });
+          if (matches.length) results.push(...matches);
+        }
       }
     }
 
