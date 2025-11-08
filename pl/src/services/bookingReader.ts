@@ -44,6 +44,7 @@ export default class BookingReader {
       );
     });
     await question("\nPress Enter to return to the menu...");
+    console.clear();
   }
   async searchBookings(): Promise<void> {
     const bookingKeyword = await question(
@@ -69,5 +70,6 @@ export default class BookingReader {
     });
 
     await question("\nPress Enter to return to the menu...");
+    console.clear();
   }
 }

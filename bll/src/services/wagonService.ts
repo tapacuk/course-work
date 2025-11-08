@@ -1,10 +1,10 @@
+import chalk from "chalk";
 import { Train } from "src/models/train";
 import { Wagon } from "src/models/wagons";
-import chalk from "chalk";
 
 export class WagonService {
   addWagon(train: Train, wagonType: string, seatsNum: number): Train {
-    if (!["sleeper", "coupe", "berth"].includes(wagonType.toLowerCase())) {
+    if (!["coupe", "berth"].includes(wagonType.toLowerCase())) {
       throw new Error("Invalid wagon type");
     }
     if (seatsNum <= 0) throw new Error("Invalid number of seats");
@@ -27,7 +27,7 @@ export class WagonService {
 
   deleteWagon(train: Train, wagonId: number): Train {
     const wagon = train.wagons.find((w) => w.id === wagonId);
-    if (!wagon) throw new Error("Wagon not found");
+    if (!wagon) throw new Error("Wagon with this id is not found");
 
     if (wagon.seats.some((s) => s.isBooked)) {
       throw new Error("Cannot delete wagon: some seats are booked");
@@ -39,7 +39,7 @@ export class WagonService {
 
   getWagonInfo(train: Train, wagonId: number): string {
     const wagon = train.wagons.find((w) => w.id === wagonId);
-    if (!wagon) throw new Error("Wagon not found");
+    if (!wagon) throw new Error("Invalid wagon ID");
 
     const bookedSeats = wagon.seats.filter((s) => s.isBooked).length;
     const availableSeats = wagon.seats.length - bookedSeats;

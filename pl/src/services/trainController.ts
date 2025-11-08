@@ -22,33 +22,32 @@ export default class TrainController {
   public async addTrain(): Promise<void> {
     const name = await question("Train name: ");
     if (!name) {
-      console.log("Name required.");
+      console.clear();
+      console.error("Name required.");
       return;
     }
 
     const route = await question("Train route (eg. Kyiv-Dnipro): ");
     if (!route) {
-      console.log("Route required.");
+      console.clear();
+      console.error("Route required.");
       return;
     }
 
     const wagonsNum = await question("Number of wagons: ");
     if (!wagonsNum || isNaN(Number(wagonsNum)) || Number(wagonsNum) <= 0) {
       console.clear();
-      console.log("Valid number of wagons required.");
+      console.error("Valid number of wagons required.");
       return;
     }
 
-    const wagonsType = await question(
-      "Wagons type (Sleeper, Coupe or Berth): "
-    );
+    const wagonsType = await question("Wagons type (Coupe or Berth): ");
     if (
-      wagonsType.toLowerCase() !== "sleeper" &&
       wagonsType.toLowerCase() !== "coupe" &&
       wagonsType.toLowerCase() !== "berth"
     ) {
       console.clear();
-      console.log("Wagon type isn't valid!");
+      console.error("Wagon type isn't valid!");
       return;
     }
 
@@ -67,7 +66,7 @@ export default class TrainController {
 
         if (validInput) {
           console.clear();
-          console.log("Valid number of seats required.");
+          console.error("Valid number of seats required.");
           continue;
         } else {
           seatsPerWagon = Number(seatsInput);
@@ -224,7 +223,7 @@ export default class TrainController {
     let editRunning = true;
     while (editRunning) {
       console.log(
-        `\n(!) Editing Train: ${trainToEdit.name} | ${trainToEdit.route}`
+        `\n(!) Editing Train: ${chalk.yellowBright(trainToEdit.name)} / route: ${chalk.yellowBright(trainToEdit.route)}`
       );
       console.log("\nChoose what to edit:");
       console.log("1) Name");
@@ -236,7 +235,9 @@ export default class TrainController {
       switch (editChoice) {
         case "1":
           console.clear();
-          const newName = await question("Enter new name: ");
+          console.log(`\nCurrent name: ${trainToEdit.name}`);
+          console.log(chalk.gray("(Leave empty to cancel)"));
+          const newName = await question("\nEnter new name: ");
           if (newName) {
             trainToEdit.name = newName.trim();
             console.clear();
@@ -248,7 +249,9 @@ export default class TrainController {
           break;
         case "2":
           console.clear();
-          const newRoute = await question("Enter new route: ");
+          console.log(`\nCurrent route: ${trainToEdit.route}`);
+          console.log(chalk.gray("(Leave empty to cancel)"));
+          const newRoute = await question("\nEnter new route: ");
           if (newRoute) {
             trainToEdit.route = newRoute.trim().replace(/\s+/g, "-");
             console.clear();
@@ -292,25 +295,31 @@ export default class TrainController {
       console.clear();
       switch (wagonChoice) {
         case "1":
+          console.clear();
           try {
             train = await this.wagonController.addWagon(train);
-            console.log("Wagon added successfully!");
-          } catch {
-            throw new Error("Failed to add wagon to train");
+          } catch (error: any) {
+            console.clear();
+            console.error(`${error.message}`);
+            break;
           }
+          console.clear();
+          console.log("Wagon added successfully!");
           break;
         case "2":
           try {
             train = await this.wagonController.deleteWagon(train);
-            console.clear();
-            console.log("Wagon deleted successfully!");
           } catch (error: any) {
             console.clear();
-            console.log(`${error.message}`);
+            console.error(`${error.message}`);
+            break;
           }
+          console.clear();
+          console.log("Wagon deleted successfully!");
           break;
         case "3":
           await this.wagonController.showWagonInfo(train);
+          console.clear();
           break;
         case "0":
           console.clear();

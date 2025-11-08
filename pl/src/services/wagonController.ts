@@ -12,8 +12,13 @@ export class WagonController {
   public async addWagon(train: Train): Promise<Train> {
     console.log(`\n${chalk.gray("-- Add Wagon --")}`);
 
-    const wagonType = await question("Wagon type (Sleeper, Coupe, Berth): ");
+    const wagonType = await question("Wagon type (Coupe, Berth): ");
+    if (!["coupe", "berth"].includes(wagonType.toLowerCase())) {
+      throw new Error("Invalid wagon type");
+    }
+
     const seatsNum = Number(await question("Number of seats: "));
+    if (seatsNum <= 0) throw new Error("Invalid number of seats");
 
     try {
       const updatedTrain = this.wagonService.addWagon(
@@ -23,8 +28,7 @@ export class WagonController {
       );
       return updatedTrain;
     } catch (error: any) {
-      console.log(error.message);
-      return train;
+      throw error;
     }
   }
 
@@ -41,8 +45,7 @@ export class WagonController {
       const updatedTrain = this.wagonService.deleteWagon(train, wagonId);
       return updatedTrain;
     } catch (error: any) {
-      console.log(error.message);
-      return train;
+      throw error;
     }
   }
 
@@ -62,7 +65,8 @@ export class WagonController {
       const info = this.wagonService.getWagonInfo(train, wagonId);
       console.log(info);
     } catch (error: any) {
-      console.log(error.message);
+      console.error(error.message);
+      return;
     }
 
     await question("\nPress Enter to continue...");

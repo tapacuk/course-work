@@ -43,12 +43,10 @@ export async function menuBooking(): Promise<void> {
             case "1":
               console.clear();
               await bookingReader.listBookings();
-              console.clear();
               break;
             case "2":
               console.clear();
               await bookingReader.searchBookings();
-              console.clear();
               break;
             case "0":
               console.clear();

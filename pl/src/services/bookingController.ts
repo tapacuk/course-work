@@ -30,7 +30,7 @@ export class BookingController {
   }
 
   public async addBooking(): Promise<void> {
-    const keyword = await question("Search for a train for booking: ");
+    const keyword = await question("\nSearch for a train for booking: ");
     let trainMatches = [];
     try {
       trainMatches = await this.trainService.findByID(keyword);
@@ -50,10 +50,14 @@ export class BookingController {
       });
 
       trainChoice = await question(
-        `Enter number of train you want to book a seat in (Enter 0 to cancel): `
+        `\nEnter number of train you want to book a seat in (Enter 0 to cancel): `
       );
 
-      if (Number(trainChoice) === 0) return;
+      if (Number(trainChoice) === 0) {
+        console.clear();
+        return;
+      }
+
       if (
         await this.searchHelper.validateSearchInput(
           trainChoice,
@@ -61,7 +65,7 @@ export class BookingController {
         )
       ) {
         console.clear();
-        console.log("Invalid choice.");
+        console.error("Invalid choice.\n");
         continue;
       } else {
         break;
@@ -75,7 +79,7 @@ export class BookingController {
     console.clear();
     while (true) {
       console.log(
-        `"Selected Train:" ${train.name}, ${train.route} ${chalk.gray(`${train.id}`)}`
+        `\n${chalk.yellowBright("Selected Train")}: ${train.name}, ${train.route} ${chalk.gray(`${train.id}`)}`
       );
       train.wagons.forEach((w) => {
         console.log(
@@ -84,11 +88,16 @@ export class BookingController {
       });
 
       const wagonChoice = Number(
-        await question("Enter wagon ID to book a seat in: ")
+        await question("\nEnter wagon ID to book a seat in: ")
       );
 
-      if (wagonChoice === 0) return;
+      if (wagonChoice === 0) {
+        console.clear();
+        return;
+      }
+
       let wagonMatches;
+
       try {
         wagonMatches = this.wagonService.findById(train, wagonChoice);
       } catch (error: any) {
@@ -105,11 +114,14 @@ export class BookingController {
 
     while (true) {
       console.log(
-        `"Selected Train:" ${train.name}, ${train.route} ${chalk.gray(`${train.id}`)}`
+        `"\nSelected Train:" ${train.name}, ${train.route} ${chalk.gray(`${train.id}`)}`
       );
       console.log(this.wagonService.getWagonInfo(train, wagon.id));
-      const seatChoice = Number(await question("Enter seat ID to book: "));
-      if (seatChoice === 0) return;
+      const seatChoice = Number(await question("\nEnter seat ID to book: "));
+      if (seatChoice === 0) {
+        console.clear();
+        return;
+      }
 
       try {
         seat = await this.service.seatFindById(wagon, seatChoice);
@@ -124,7 +136,7 @@ export class BookingController {
     console.clear();
     let passanger: string;
     while (true) {
-      passanger = await question("Enter passenger name: ");
+      passanger = await question("\nEnter passenger name: ");
       if (!passanger.trim()) {
         console.clear();
         console.log("Passenger name cannot be empty.");
@@ -179,7 +191,11 @@ export class BookingController {
         "\nSelect index of booking to remove (enter 0 to cancel): "
       );
 
-      if (Number(choiceBooking) === 0) return;
+      if (Number(choiceBooking) === 0) {
+        console.clear();
+        return;
+      }
+
       if (
         await this.searchHelper.validateSearchInput(
           choiceBooking,
@@ -210,9 +226,12 @@ export class BookingController {
 
   public async editBooking(): Promise<void> {
     const keyword = await question(
-      "Search for a booking to edit (Enter id, Passanger Name or Date / 0 for return): "
+      "\nSearch for a booking to edit (Enter id, Passanger Name or Date / 0 for return): "
     );
-    if (keyword === "0") return;
+    if (keyword === "0") {
+      console.clear();
+      return;
+    }
 
     console.clear();
 
@@ -232,9 +251,12 @@ export class BookingController {
     });
 
     const choice = await question(
-      "\n Enter id of booking to edit (or 0 to cancel): "
+      "\nEnter id of booking to edit (or 0 to cancel): "
     );
-    if (choice === "0") return;
+    if (choice === "0") {
+      console.clear();
+      return;
+    }
 
     try {
       this.searchHelper.validateSearchInput(choice, bookingMatches.length);
@@ -253,10 +275,10 @@ export class BookingController {
       console.log(
         `\nEditing booking for ${chalk.yellowBright(`${bookingToEdit.passengerName}`)} for ${chalk.yellowBright(`${bookingToEdit.date}`)} ${chalk.gray(`${bookingToEdit.id}`)}`
       );
-      console.log("1) Edit Passenger Name");
+      console.log("\n1) Edit Passenger Name");
       console.log("2) Edit Date");
-      console.log("\n0) Cancel");
-      const input = await question("Choose an option to edit: ");
+      console.log("0) Cancel");
+      const input = await question("\nChoose an option to edit: ");
       switch (input) {
         case "1":
           console.clear();
@@ -284,7 +306,7 @@ export class BookingController {
         case "2":
           console.clear();
           console.log(
-            "Current date: " + chalk.yellowBright(bookingToEdit.date)
+            "\nCurrent date: " + chalk.yellowBright(bookingToEdit.date)
           );
           console.log(
             chalk.gray(
