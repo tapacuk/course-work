@@ -27,5 +27,8 @@
     "prepare": "lint-staged",
     "start": "bun run --cwd ./pl src/index.ts",
     "build": "bun run --cwd dal build && bun run --cwd bll build && bun run --cwd pl build"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2"
   }
 }

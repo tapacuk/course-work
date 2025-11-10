@@ -1,6 +1,7 @@
 import { Train } from "../models/train";
 import { Wagon } from "../models/wagons";
 import { Seat } from "../models/seat";
+import { Booking } from "../models/booking";
 import { JSONProvider } from "course-work-dal";
 
 export class TrainService {
@@ -15,10 +16,26 @@ export class TrainService {
   async load(filePath: string): Promise<Train[]> {
     const raw = (await this.provider.read(filePath)) as any[];
 
-    return raw.map((r: Train) => {
+    return raw.map((r: any) => {
       const wagons: Wagon[] = (r.wagons || []).map((w: any) => {
         const seats: Seat[] = (w.seats || []).map(
-          (s: any) => new Seat({ id: s.id, isBooked: s.isBooked })
+          (s: any) =>
+            new Seat({
+              id: s.id,
+              isBooked: s.isBooked,
+              ...(s.booking
+                ? {
+                    booking: (s.booking as any[]).map(
+                      (b: any) =>
+                        new Booking({
+                          id: b.id,
+                          passengerName: b.passengerName,
+                          date: b.date,
+                        })
+                    ),
+                  }
+                : { booking: [] }),
+            })
         );
         return new Wagon({ id: w.id, type: w.type, seats });
       });
@@ -37,7 +54,19 @@ export class TrainService {
       wagons: train.wagons.map((w) => ({
         id: w.id,
         type: w.type,
-        seats: w.seats.map((s) => ({ id: s.id, isBooked: s.isBooked })),
+        seats: w.seats.map((s) => ({
+          id: s.id,
+          isBooked: s.isBooked,
+          ...(s.booking
+            ? {
+                booking: s.booking.map((b) => ({
+                  id: b.id,
+                  passengerName: b.passengerName,
+                  date: b.date,
+                })),
+              }
+            : { booking: [] }),
+        })),
       })),
     };
     const toSave = Array.isArray(existing) ? [...existing, item] : [item];
@@ -60,16 +89,51 @@ export class TrainService {
     }
   }
 
-  async deleteSpecific(filePath: string, id: string): Promise<boolean> {
+  async deleteSpecific(filePath: string, id: string): Promise<void> {
     const trains = await this.load(filePath);
-    const remaining = trains.filter((t) => t.id !== id);
+    const train = trains.find((t) => t.id === id);
+    if (!train) throw new Error("Train not found");
 
-    if (remaining.length === trains.length) {
-      return false;
-    }
+    const hasBookedSeats = train.wagons.some((w) =>
+      w.seats.some((s) => s.isBooked === true)
+    );
+    if (hasBookedSeats)
+      throw new Error("Cannot delete train: some seats are booked");
+
+    const remaining = trains.filter((t) => t.id !== id);
+    if (remaining.length === trains.length)
+      throw new Error("Failed to delete train (Train is already removed)");
 
     await this.provider.write(filePath, remaining);
-    return true;
+    return;
+  }
+
+  async generateID(name: string, route: string): Promise<string> {
+    const normalizedName = name.toUpperCase().trim().replace(/\s+/g, "-");
+    const normalizedRoute = route.trim().replace(/\s+/g, "-");
+    const id = `TRAIN-${normalizedName}-${normalizedRoute.toUpperCase()}`;
+    return id;
+  }
+
+  async findByID(keyword: string): Promise<Train[]> {
+    const trains = ((await this.provider.read(this.filePath)) as Train[]) || [];
+    const normalized = keyword.toUpperCase().trim();
+    const matches = trains.filter((t: Train) =>
+      t.id.toUpperCase().includes(normalized)
+    );
+
+    if (matches.length === 0) {
+      throw new Error("No matches found");
+    }
+    return matches;
+  }
+
+  async updateTrain(filePath: string, updatedTrain: Train): Promise<void> {
+    const trains = await this.load(filePath);
+    const index = trains.findIndex((t) => t.id === updatedTrain.id);
+    if (index === -1) throw new Error("Train not found");
+    trains[index] = updatedTrain;
+    await this.provider.write(filePath, trains);
   }
 }
 

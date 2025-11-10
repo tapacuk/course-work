@@ -1,1 +1,1 @@
-export * from "./jsonProvider";
+export * from "./provider/jsonProvider";
