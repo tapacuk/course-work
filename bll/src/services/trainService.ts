@@ -48,21 +48,21 @@ export class TrainService {
     const existing = ((await this.provider.read(filePath)) as any[]) || [];
 
     const item = {
-      id: train.id,
-      name: train.name,
-      route: train.route,
+      id: train.id, // string
+      name: train.name, // string
+      route: train.route, // string
       wagons: train.wagons.map((w) => ({
-        id: w.id,
-        type: w.type,
+        id: w.id, // number
+        type: w.type, // coupe or berth
         seats: w.seats.map((s) => ({
-          id: s.id,
-          isBooked: s.isBooked,
+          id: s.id, // number
+          isBooked: s.isBooked, // boolean
           ...(s.booking
             ? {
                 booking: s.booking.map((b) => ({
-                  id: b.id,
-                  passengerName: b.passengerName,
-                  date: b.date,
+                  id: b.id, // string
+                  passengerName: b.passengerName, // string
+                  date: b.date, // string
                 })),
               }
             : { booking: [] }),

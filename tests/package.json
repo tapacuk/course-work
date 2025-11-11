@@ -1,0 +1,20 @@
+{
+  "name": "course-work-tests",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "jest --coverage --passWithNoTests"
+  },
+  "dependencies": {
+    "course-work-bll": "file:../bll",
+    "course-work-dal": "file:../dal"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.2.0",
+    "ts-jest": "^29.4.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  }
+}

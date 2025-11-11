@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import { Train } from "src/models/train";
 import { Wagon } from "src/models/wagons";
 
@@ -47,14 +46,12 @@ export class WagonService {
     const seatsInfo = wagon.seats
       .map((s, i) =>
         (i + 1) % 6 === 0
-          ? `${i + 1}. ${s.isBooked ? `${chalk.gray("■")}` : `${chalk.greenBright("□")}`}\n         `
-          : `${i + 1}. ${s.isBooked ? `${chalk.gray("■")}` : `${chalk.greenBright("□")}`}`
+          ? `${i + 1}. ${s.isBooked ? "■" : "□"}\n         `
+          : `${i + 1}. ${s.isBooked ? "■" : "□"}`
       )
       .join("  ");
 
-    return `\n${chalk.yellowBright("Wagon ID:")} ${wagon.id} ${chalk.gray("/")} ${chalk.yellowBright("Type:")} ${wagon.type} ${chalk.gray("/")} ${chalk.yellowBright("Fullness:")} ${bookedPercent}% 
-    ${chalk.yellowBright("Total Seats:")} ${wagon.seats.length} ${chalk.gray("/")} ${chalk.yellowBright("■ Booked:")} ${bookedSeats} ${chalk.gray("/")} ${chalk.yellowBright("□ Available:")} ${availableSeats}
-    ${chalk.yellowBright("Seats:")} ${seatsInfo}`;
+    return `\nWagon ID: ${wagon.id} / Type: ${wagon.type} / Fullness: ${bookedPercent}% \n    Total Seats: ${wagon.seats.length} / ■ Booked: ${bookedSeats} / □ Available: ${availableSeats}\n    Seats: ${seatsInfo}`;
   }
 
   findById(train: Train, wagonId: number): Wagon {

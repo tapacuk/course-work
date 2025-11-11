@@ -28,6 +28,10 @@ export class JSONProvider<T extends object> implements IDataProvider<T> {
   }
 
   async deleteFile(filePath: string = "./trains.json"): Promise<void> {
+    if (!(await fs.stat(filePath)).isFile()) {
+      return
+      // throw new Error(`Path ${filePath} is not a file`);
+    }
     await fs.unlink(filePath);
   }
 }
