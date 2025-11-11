@@ -2,22 +2,19 @@ import * as path from "path";
 import { promises as fs } from "fs";
 import { TrainService, Train, Wagon, Seat, Booking } from "course-work-bll";
 
+// const filePath = path.resolve(
+//   __dirname,
+//   "..",
+//   "..",
+//   `train-data-${Date.now()}.json`
+// );
 const filePath = path.resolve(__dirname, "..", "..", "temp-trains.json");
 
 describe("TrainService", () => {
   let service: TrainService;
 
   beforeEach(async () => {
-    try {
-      await fs.unlink(filePath);
-    } catch {}
     service = new TrainService(filePath);
-  });
-
-  afterEach(async () => {
-    try {
-      await fs.unlink(filePath);
-    } catch {}
   });
 
   test("should create a empty file", async () => {
@@ -69,9 +66,9 @@ describe("TrainService", () => {
 
     const id = await service.generateID(name, route);
     const train = new Train({
-      id,
-      name,
-      route,
+      id: id,
+      name: name,
+      route: route,
       wagons: [
         new Wagon({
           id: 1,
@@ -108,9 +105,9 @@ describe("TrainService", () => {
 
     const id = await service.generateID(name, route);
     const train = new Train({
-      id,
-      name,
-      route,
+      id: id,
+      name: name,
+      route: route,
       wagons: [
         new Wagon({
           id: 1,
@@ -136,9 +133,9 @@ describe("TrainService", () => {
 
     const id = await service.generateID(name, route);
     const train = new Train({
-      id,
-      name,
-      route,
+      id: id,
+      name: name,
+      route: route,
       wagons: [],
     });
 
@@ -148,7 +145,7 @@ describe("TrainService", () => {
     expect(matches.length).toBeGreaterThan(0);
     expect(matches[0]!.id).toBe(id);
 
-    await expect(service.findByID("no-such-id-xyz")).rejects.toThrow(
+    await expect(service.findByID("nonexistent")).rejects.toThrow(
       "No matches found"
     );
   });
@@ -161,9 +158,9 @@ describe("TrainService", () => {
 
     const id = await service.generateID(name, route);
     const train = new Train({
-      id,
-      name,
-      route,
+      id: id,
+      name: name,
+      route: route,
       wagons: [],
     });
 
@@ -171,9 +168,9 @@ describe("TrainService", () => {
 
     name = "TrainUpdated";
     const updated = new Train({
-      id,
-      name,
-      route,
+      id: id,
+      name: name,
+      route: route,
       wagons: [],
     });
     await service.updateTrain(filePath, updated);
@@ -191,9 +188,9 @@ describe("TrainService", () => {
     const route = "A-B";
     const id = await service.generateID(name, route);
     const train = new Train({
-      id,
-      name,
-      route,
+      id: id,
+      name: name,
+      route: route,
       wagons: [],
     });
 
@@ -203,5 +200,11 @@ describe("TrainService", () => {
     expect(loaded.length).toBe(1);
     await service.delete(filePath);
     expect(await service.load(filePath)).toEqual([]);
+  });
+
+  test("should throw when deleting a file that does not exist", async () => {
+    await expect(service.delete(filePath)).rejects.toThrow(
+      "Failed to delete file"
+    );
   });
 });

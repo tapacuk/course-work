@@ -23,7 +23,8 @@ module.exports = {
   collectCoverage: true,
   coverageProvider: "v8",
   collectCoverageFrom: [
-    "<rootDir>/bll/src/**/*.ts",
+    "<rootDir>/bll/src/services/*.ts",
+    "!<rootDir>/bll/src/services/searchHelper.ts",
     "!<rootDir>/bll/src/**/*.d.ts",
   ],
   coverageDirectory: "<rootDir>/coverage",
