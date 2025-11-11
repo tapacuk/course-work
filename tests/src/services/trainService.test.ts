@@ -3,33 +3,33 @@ import { promises as fs } from "fs";
 
 import { TrainService, Train, Wagon, Seat, Booking } from "course-work-bll";
 
-const tmpFile = path.resolve(__dirname, "..", "..", "tmp-trains.test.json");
+const filePath = path.resolve(__dirname, "..", "..", "temp-trains.json");
 
 describe("TrainService", () => {
   let service: TrainService;
 
   beforeEach(async () => {
     try {
-      await fs.unlink(tmpFile);
+      await fs.unlink(filePath);
     } catch {}
-    service = new TrainService(tmpFile);
+    service = new TrainService(filePath);
   });
 
   afterEach(async () => {
     try {
-      await fs.unlink(tmpFile);
+      await fs.unlink(filePath);
     } catch {}
   });
 
   test("create() creates an empty JSON file and load() returns []", async () => {
-    await service.create(tmpFile);
-    const loaded = await service.load(tmpFile);
+    await service.create(filePath);
+    const loaded = await service.load(filePath);
     expect(Array.isArray(loaded)).toBe(true);
     expect(loaded.length).toBe(0);
   });
 
   test("save() persists a train and load() returns it back", async () => {
-    await service.create(tmpFile);
+    await service.create(filePath);
 
     const id = await service.generateID("Express", "A - B");
     const train = new Train({
@@ -45,9 +45,9 @@ describe("TrainService", () => {
       ],
     });
 
-    await service.save(tmpFile, train);
+    await service.save(filePath, train);
 
-    const loaded = await service.load(tmpFile);
+    const loaded = await service.load(filePath);
     expect(loaded.length).toBe(1);
     const l = loaded[0]!;
     expect(l.id).toBe(id);
@@ -56,7 +56,7 @@ describe("TrainService", () => {
   });
 
   test("deleteSpecific() throws when some seats are booked", async () => {
-    await service.create(tmpFile);
+    await service.create(filePath);
 
     const id = await service.generateID("BookedTrain", "X-Y");
     const train = new Train({
@@ -84,15 +84,15 @@ describe("TrainService", () => {
       ],
     });
 
-    await service.save(tmpFile, train);
+    await service.save(filePath, train);
 
-    await expect(service.deleteSpecific(tmpFile, id)).rejects.toThrow(
+    await expect(service.deleteSpecific(filePath, id)).rejects.toThrow(
       "Cannot delete train: some seats are booked"
     );
   });
 
   test("deleteSpecific() removes train when no seats are booked", async () => {
-    await service.create(tmpFile);
+    await service.create(filePath);
 
     const id = await service.generateID("Removable", "R-T");
     const train = new Train({
@@ -108,16 +108,16 @@ describe("TrainService", () => {
       ],
     });
 
-    await service.save(tmpFile, train);
-    expect((await service.load(tmpFile)).length).toBe(1);
+    await service.save(filePath, train);
+    expect((await service.load(filePath)).length).toBe(1);
 
-    await service.deleteSpecific(tmpFile, id);
-    const after = await service.load(tmpFile);
+    await service.deleteSpecific(filePath, id);
+    const after = await service.load(filePath);
     expect(after.length).toBe(0);
   });
 
   test("findByID() returns matches and throws when none found", async () => {
-    await service.create(tmpFile);
+    await service.create(filePath);
 
     const id = await service.generateID("Finder", "AA-BB");
     const train = new Train({
@@ -127,7 +127,7 @@ describe("TrainService", () => {
       wagons: [],
     });
 
-    await service.save(tmpFile, train);
+    await service.save(filePath, train);
 
     const matches = await service.findByID("finder");
     expect(matches.length).toBeGreaterThan(0);
@@ -139,7 +139,7 @@ describe("TrainService", () => {
   });
 
   test("updateTrain() replaces an existing train", async () => {
-    await service.create(tmpFile);
+    await service.create(filePath);
 
     const id = await service.generateID("Updater", "1-2");
     const train = new Train({
@@ -149,7 +149,7 @@ describe("TrainService", () => {
       wagons: [],
     });
 
-    await service.save(tmpFile, train);
+    await service.save(filePath, train);
 
     const updated = new Train({
       id,
@@ -157,9 +157,9 @@ describe("TrainService", () => {
       route: "1-2",
       wagons: [],
     });
-    await service.updateTrain(tmpFile, updated);
+    await service.updateTrain(filePath, updated);
 
-    const loaded = await service.load(tmpFile);
+    const loaded = await service.load(filePath);
     expect(loaded.length).toBe(1);
     expect(loaded[0]!.name).toBe("UpdaterX");
   });
