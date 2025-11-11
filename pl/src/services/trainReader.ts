@@ -5,18 +5,14 @@ import chalk from "chalk";
 
 export default class TrainReader {
   private filePath: string;
-  private service: any;
-  private wagonController: any;
+  private service: TrainService;
+  private wagonController: WagonController;
   private searchHelper: SearchHelper;
 
   constructor(filePath = "./trains.json", trainService?: TrainService) {
     this.filePath = filePath;
 
-    try {
-      this.service = trainService ?? new TrainService(this.filePath);
-    } catch (error) {
-      console.error("Failed to initialize TrainService", error);
-    }
+    this.service = trainService ?? new TrainService(this.filePath);
     this.wagonController = new WagonController();
     this.searchHelper = new SearchHelper();
   }

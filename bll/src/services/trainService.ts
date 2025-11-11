@@ -47,22 +47,24 @@ export class TrainService {
   async save(filePath: string, train: Train): Promise<void> {
     const existing = ((await this.provider.read(filePath)) as any[]) || [];
 
+    const id = train.id ?? (await this.generateID(train.name, train.route));
+
     const item = {
-      id: train.id, // string
-      name: train.name, // string
-      route: train.route, // string
+      id,
+      name: train.name,
+      route: train.route,
       wagons: train.wagons.map((w) => ({
-        id: w.id, // number
-        type: w.type, // coupe or berth
+        id: w.id,
+        type: w.type,
         seats: w.seats.map((s) => ({
-          id: s.id, // number
-          isBooked: s.isBooked, // boolean
+          id: s.id,
+          isBooked: s.isBooked,
           ...(s.booking
             ? {
                 booking: s.booking.map((b) => ({
-                  id: b.id, // string
-                  passengerName: b.passengerName, // string
-                  date: b.date, // string
+                  id: b.id,
+                  passengerName: b.passengerName,
+                  date: b.date,
                 })),
               }
             : { booking: [] }),
@@ -74,11 +76,10 @@ export class TrainService {
   }
 
   async create(filePath: string): Promise<void> {
-    try {
-      await this.provider.create(filePath);
-    } catch {
-      throw new Error("Failed to create file");
+    if (!filePath || typeof filePath !== "string") {
+      throw new Error("Invalid file path");
     }
+    await this.provider.create(filePath);
   }
 
   async delete(filePath: string): Promise<void> {
@@ -133,6 +134,10 @@ export class TrainService {
     const index = trains.findIndex((t) => t.id === updatedTrain.id);
     if (index === -1) throw new Error("Train not found");
     trains[index] = updatedTrain;
+    trains[index].id = await this.generateID(
+      trains[index].name,
+      trains[index].route
+    );
     await this.provider.write(filePath, trains);
   }
 }

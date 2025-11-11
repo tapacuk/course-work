@@ -306,12 +306,11 @@ export class BookingController {
         case "2":
           console.clear();
           console.log(
-            "\nCurrent date: " + chalk.yellowBright(bookingToEdit.date)
+            "\nCurrent date: " +
+              chalk.yellowBright(await this.service.generateDateString(0))
           );
           console.log(
-            chalk.gray(
-              "For date shift use numbers: 4 for 4 days later, -2 for 2 days earlier"
-            )
+            chalk.gray("For date shift use numbers: 4 for 4 days later")
           );
           const newDate = await question("\nEnter date shift: ");
           try {
