@@ -1,6 +1,5 @@
 import * as path from "path";
 import { promises as fs } from "fs";
-
 import { TrainService, Train, Wagon, Seat, Booking } from "course-work-bll";
 
 const filePath = path.resolve(__dirname, "..", "..", "temp-trains.json");
@@ -21,21 +20,28 @@ describe("TrainService", () => {
     } catch {}
   });
 
-  test("create() creates an empty JSON file and load() returns []", async () => {
+  test("should create a empty file", async () => {
     await service.create(filePath);
     const loaded = await service.load(filePath);
     expect(Array.isArray(loaded)).toBe(true);
     expect(loaded.length).toBe(0);
   });
 
-  test("save() persists a train and load() returns it back", async () => {
+  test("should throw an error when file path is invalid", async () => {
+    await expect(service.create("")).rejects.toThrow("Invalid file path");
+  });
+
+  test("should save a train", async () => {
     await service.create(filePath);
 
-    const id = await service.generateID("Express", "A - B");
+    const name = "Express";
+    const route = "A-B";
+
+    const id = await service.generateID(name, route);
     const train = new Train({
       id,
-      name: "Express",
-      route: "A - B",
+      name,
+      route,
       wagons: [
         new Wagon({
           id: 1,
@@ -55,14 +61,17 @@ describe("TrainService", () => {
     expect(l.wagons[0].seats[0].id).toBe(1);
   });
 
-  test("deleteSpecific() throws when some seats are booked", async () => {
+  test("throw an error when deleting train with booked seats", async () => {
     await service.create(filePath);
 
-    const id = await service.generateID("BookedTrain", "X-Y");
+    const name = "BookedTrain";
+    const route = "X-Y";
+
+    const id = await service.generateID(name, route);
     const train = new Train({
       id,
-      name: "BookedTrain",
-      route: "X-Y",
+      name,
+      route,
       wagons: [
         new Wagon({
           id: 1,
@@ -91,14 +100,17 @@ describe("TrainService", () => {
     );
   });
 
-  test("deleteSpecific() removes train when no seats are booked", async () => {
+  test("should remove a train with no seats booked", async () => {
     await service.create(filePath);
 
-    const id = await service.generateID("Removable", "R-T");
+    const name = "Removable";
+    const route = "R-T";
+
+    const id = await service.generateID(name, route);
     const train = new Train({
       id,
-      name: "Removable",
-      route: "R-T",
+      name,
+      route,
       wagons: [
         new Wagon({
           id: 1,
@@ -116,14 +128,17 @@ describe("TrainService", () => {
     expect(after.length).toBe(0);
   });
 
-  test("findByID() returns matches and throws when none found", async () => {
+  test("should return matches and throw when none found", async () => {
     await service.create(filePath);
 
-    const id = await service.generateID("Finder", "AA-BB");
+    const name = "Finder";
+    const route = "AA-BB";
+
+    const id = await service.generateID(name, route);
     const train = new Train({
       id,
-      name: "Finder",
-      route: "AA-BB",
+      name,
+      route,
       wagons: [],
     });
 
@@ -138,29 +153,55 @@ describe("TrainService", () => {
     );
   });
 
-  test("updateTrain() replaces an existing train", async () => {
+  test("should update an existing train", async () => {
     await service.create(filePath);
 
-    const id = await service.generateID("Updater", "1-2");
+    let name = "Train";
+    let route = "1-2";
+
+    const id = await service.generateID(name, route);
     const train = new Train({
       id,
-      name: "Updater",
-      route: "1-2",
+      name,
+      route,
       wagons: [],
     });
 
     await service.save(filePath, train);
 
+    name = "TrainUpdated";
     const updated = new Train({
       id,
-      name: "UpdaterX",
-      route: "1-2",
+      name,
+      route,
       wagons: [],
     });
     await service.updateTrain(filePath, updated);
 
     const loaded = await service.load(filePath);
     expect(loaded.length).toBe(1);
-    expect(loaded[0]!.name).toBe("UpdaterX");
+    expect(loaded[0]!.name).toBe("TrainUpdated");
+    expect(loaded[0]!.id).toBe("TRAIN-TRAINUPDATED-1-2");
+  });
+
+  test("should delete a file with a train", async () => {
+    await service.create(filePath);
+
+    const name = "Express";
+    const route = "A-B";
+    const id = await service.generateID(name, route);
+    const train = new Train({
+      id,
+      name,
+      route,
+      wagons: [],
+    });
+
+    await service.save(filePath, train);
+
+    let loaded = await service.load(filePath);
+    expect(loaded.length).toBe(1);
+    await service.delete(filePath);
+    expect(await service.load(filePath)).toEqual([]);
   });
 });

@@ -1,7 +1,7 @@
 [
   {
     "id": "TRAIN-EXPRESS-LVIV-ODESA",
-    "name": "Express",
+    "name": "Fast Express",
     "route": "Lviv-Odesa",
     "wagons": [
       {
