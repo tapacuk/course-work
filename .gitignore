@@ -418,4 +418,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
-coverage
+
+coverage/
