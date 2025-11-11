@@ -157,8 +157,11 @@ export class BookingService {
     const date = new Date();
     date.setDate(date.getDate() + shift);
 
-    if (shift < 0 && date < new Date())
-      throw new Error("Date cannot be before today");
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+
+    if (date < today) throw new Error("Date cannot be before today");
 
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
