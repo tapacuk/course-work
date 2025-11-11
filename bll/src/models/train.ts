@@ -20,7 +20,7 @@ export class Train {
     this.wagons = props.wagons;
   }
 
-  generateID(): string {
+  private generateID(): string {
     return `TRAIN-${this.name.toUpperCase().trim}-${this.route.toUpperCase().trim()}`;
   }
 }
