@@ -13,7 +13,7 @@ export class TrainService {
     this.filePath = filePath;
   }
 
-  async load(filePath: string): Promise<Train[]> {
+  async loadTrains(filePath: string): Promise<Train[]> {
     const raw = (await this.provider.read(filePath)) as any[];
 
     return raw.map((r: any) => {
@@ -44,7 +44,7 @@ export class TrainService {
     });
   }
 
-  async save(filePath: string, train: Train): Promise<void> {
+  async saveTrain(filePath: string, train: Train): Promise<void> {
     const existing = ((await this.provider.read(filePath)) as any[]) || [];
 
     const id = train.id ?? (await this.generateID(train.name, train.route));
@@ -75,23 +75,55 @@ export class TrainService {
     await this.provider.write(filePath, toSave as any);
   }
 
-  async create(filePath: string): Promise<void> {
+  async createFile(filePath: string): Promise<void> {
     if (!filePath || typeof filePath !== "string") {
       throw new Error("Invalid file path");
     }
     await this.provider.create(filePath);
   }
 
-  async delete(filePath: string): Promise<void> {
+  async deleteFile(filePath: string): Promise<void> {
     try {
-      await this.provider.deleteFile(filePath);
+      await this.provider.delete(filePath);
     } catch {
       throw new Error("Failed to delete file");
     }
   }
 
-  async deleteSpecific(filePath: string, id: string): Promise<void> {
-    const trains = await this.load(filePath);
+  async createTrain(
+    name: string,
+    route: string,
+    wagonsNum: number,
+    wagonsType: string,
+    seatsPerWagon: number
+  ): Promise<Train> {
+    const wagons = [];
+
+    wagonsType.toLowerCase().trim();
+
+    for (let i = 0; i < Number(wagonsNum); i++) {
+      const seats = [];
+      for (let j = 0; j < seatsPerWagon; j++) {
+        seats.push(new Seat({ id: j + 1, isBooked: false, booking: [] }));
+      }
+
+      wagons.push(new Wagon({ id: i + 1, type: wagonsType as any, seats }));
+    }
+    const id = await this.generateID(name, route);
+    const normalizedRoute = route.trim().replace(/\s+/g, "-");
+
+    const train = new Train({
+      id,
+      name,
+      route: normalizedRoute,
+      wagons: wagons,
+    });
+
+    return train;
+  }
+
+  async deleteTrain(filePath: string, id: string): Promise<void> {
+    const trains = await this.loadTrains(filePath);
     const train = trains.find((t) => t.id === id);
     if (!train) throw new Error("Train not found");
 
@@ -107,6 +139,18 @@ export class TrainService {
 
     await this.provider.write(filePath, remaining);
     return;
+  }
+
+  async updateTrain(filePath: string, updatedTrain: Train): Promise<void> {
+    const trains = await this.loadTrains(filePath);
+    const index = trains.findIndex((t) => t.id === updatedTrain.id);
+    if (index === -1) throw new Error("Train not found");
+    trains[index] = updatedTrain;
+    trains[index].id = await this.generateID(
+      trains[index].name,
+      trains[index].route
+    );
+    await this.provider.write(filePath, trains);
   }
 
   async generateID(name: string, route: string): Promise<string> {
@@ -127,51 +171,6 @@ export class TrainService {
       throw new Error("No matches found");
     }
     return matches;
-  }
-
-  async updateTrain(filePath: string, updatedTrain: Train): Promise<void> {
-    const trains = await this.load(filePath);
-    const index = trains.findIndex((t) => t.id === updatedTrain.id);
-    if (index === -1) throw new Error("Train not found");
-    trains[index] = updatedTrain;
-    trains[index].id = await this.generateID(
-      trains[index].name,
-      trains[index].route
-    );
-    await this.provider.write(filePath, trains);
-  }
-
-  async createTrain(
-    name: string,
-    route: string,
-    wagonsNum: number,
-    wagonsType: string,
-    seatsPerWagon: number
-  ): Promise<Train> {
-    const wagons = [];
-    const seats = [];
-    wagonsType.toLowerCase().trim();
-
-    for (let j = 0; j < seatsPerWagon; j++) {
-      seats.push({ id: j + 1, isBooked: false, booking: [] as any });
-    }
-    for (let i = 0; i < Number(wagonsNum); i++) {
-      wagons.push(
-        new Wagon({ id: i + 1, type: wagonsType as any, seats: seats })
-      );
-    }
-
-    const id = await this.generateID(name, route);
-    const normalizedRoute = route.trim().replace(/\s+/g, "-");
-
-    const train = new Train({
-      id,
-      name,
-      route: normalizedRoute,
-      wagons: wagons,
-    });
-
-    return train;
   }
 }
 

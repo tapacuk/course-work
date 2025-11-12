@@ -17,19 +17,19 @@ describe("TrainService", () => {
     service = new TrainService(filePath);
   });
 
-  test("should create a empty file", async () => {
-    await service.create(filePath);
-    const loaded = await service.load(filePath);
+  test("should createFile a empty file", async () => {
+    await service.createFile(filePath);
+    const loaded = await service.loadTrains(filePath);
     expect(Array.isArray(loaded)).toBe(true);
     expect(loaded.length).toBe(0);
   });
 
   test("should throw an error when file path is invalid", async () => {
-    await expect(service.create("")).rejects.toThrow("Invalid file path");
+    await expect(service.createFile("")).rejects.toThrow("Invalid file path");
   });
 
-  test("should save a train", async () => {
-    await service.create(filePath);
+  test("should saveTrain a train", async () => {
+    await service.createFile(filePath);
 
     const name = "Express";
     const route = "A-B";
@@ -48,9 +48,9 @@ describe("TrainService", () => {
       ],
     });
 
-    await service.save(filePath, train);
+    await service.saveTrain(filePath, train);
 
-    const loaded = await service.load(filePath);
+    const loaded = await service.loadTrains(filePath);
     expect(loaded.length).toBe(1);
     const l = loaded[0]!;
     expect(l.id).toBe(id);
@@ -58,8 +58,48 @@ describe("TrainService", () => {
     expect(l.wagons[0].seats[0].id).toBe(1);
   });
 
+  test("should create a train with correct wagons and seats", async () => {
+    const name = "InterCity";
+    const route = "Kyiv-Lviv";
+    const wagonsNum = 2;
+    const wagonsType = "coupe";
+    const seatsPerWagon = 3;
+
+    const train = await service.createTrain(
+      name,
+      route,
+      wagonsNum,
+      wagonsType,
+      seatsPerWagon
+    );
+
+    expect(train).toBeInstanceOf(Train);
+    expect(train.name).toBe(name);
+    expect(train.route).toBe(route);
+    expect(train.wagons).toHaveLength(wagonsNum);
+
+    const firstWagon = train.wagons[0];
+    expect(firstWagon).toBeInstanceOf(Wagon);
+    expect(firstWagon.type).toBe(wagonsType);
+    expect(firstWagon.seats).toHaveLength(seatsPerWagon);
+
+    const firstSeat = firstWagon.seats[0];
+    expect(firstSeat).toBeInstanceOf(Seat);
+    expect(firstSeat.id).toBe(1);
+    expect(firstSeat.isBooked).toBe(false);
+    expect(firstSeat.booking).toEqual([]);
+
+    expect(train.wagons[0].seats).not.toBe(train.wagons[1].seats);
+  });
+
+  test("should handle wagonsNum or seatsPerWagon = 0", async () => {
+    const train = await service.createTrain("Empty", "Nowhere", 0, "coupe", 0);
+
+    expect(train.wagons).toHaveLength(0);
+  });
+
   test("throw an error when deleting train with booked seats", async () => {
-    await service.create(filePath);
+    await service.createFile(filePath);
 
     const name = "BookedTrain";
     const route = "X-Y";
@@ -90,15 +130,15 @@ describe("TrainService", () => {
       ],
     });
 
-    await service.save(filePath, train);
+    await service.saveTrain(filePath, train);
 
-    await expect(service.deleteSpecific(filePath, id)).rejects.toThrow(
+    await expect(service.deleteTrain(filePath, id)).rejects.toThrow(
       "Cannot delete train: some seats are booked"
     );
   });
 
   test("should remove a train with no seats booked", async () => {
-    await service.create(filePath);
+    await service.createFile(filePath);
 
     const name = "Removable";
     const route = "R-T";
@@ -117,16 +157,16 @@ describe("TrainService", () => {
       ],
     });
 
-    await service.save(filePath, train);
-    expect((await service.load(filePath)).length).toBe(1);
+    await service.saveTrain(filePath, train);
+    expect((await service.loadTrains(filePath)).length).toBe(1);
 
-    await service.deleteSpecific(filePath, id);
-    const after = await service.load(filePath);
+    await service.deleteTrain(filePath, id);
+    const after = await service.loadTrains(filePath);
     expect(after.length).toBe(0);
   });
 
   test("should return matches and throw when none found", async () => {
-    await service.create(filePath);
+    await service.createFile(filePath);
 
     const name = "Finder";
     const route = "AA-BB";
@@ -139,7 +179,7 @@ describe("TrainService", () => {
       wagons: [],
     });
 
-    await service.save(filePath, train);
+    await service.saveTrain(filePath, train);
 
     const matches = await service.findByID("finder");
     expect(matches.length).toBeGreaterThan(0);
@@ -151,7 +191,7 @@ describe("TrainService", () => {
   });
 
   test("should update an existing train", async () => {
-    await service.create(filePath);
+    await service.createFile(filePath);
 
     let name = "Train";
     let route = "1-2";
@@ -164,7 +204,7 @@ describe("TrainService", () => {
       wagons: [],
     });
 
-    await service.save(filePath, train);
+    await service.saveTrain(filePath, train);
 
     name = "TrainUpdated";
     const updated = new Train({
@@ -175,14 +215,14 @@ describe("TrainService", () => {
     });
     await service.updateTrain(filePath, updated);
 
-    const loaded = await service.load(filePath);
+    const loaded = await service.loadTrains(filePath);
     expect(loaded.length).toBe(1);
     expect(loaded[0]!.name).toBe("TrainUpdated");
     expect(loaded[0]!.id).toBe("TRAIN-TRAINUPDATED-1-2");
   });
 
   test("should delete a file with a train", async () => {
-    await service.create(filePath);
+    await service.createFile(filePath);
 
     const name = "Express";
     const route = "A-B";
@@ -194,16 +234,16 @@ describe("TrainService", () => {
       wagons: [],
     });
 
-    await service.save(filePath, train);
+    await service.saveTrain(filePath, train);
 
-    let loaded = await service.load(filePath);
+    let loaded = await service.loadTrains(filePath);
     expect(loaded.length).toBe(1);
-    await service.delete(filePath);
-    expect(await service.load(filePath)).toEqual([]);
+    await service.deleteFile(filePath);
+    expect(await service.loadTrains(filePath)).toEqual([]);
   });
 
   test("should throw when deleting a file that does not exist", async () => {
-    await expect(service.delete(filePath)).rejects.toThrow(
+    await expect(service.deleteFile(filePath)).rejects.toThrow(
       "Failed to delete file"
     );
   });

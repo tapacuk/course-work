@@ -46,6 +46,7 @@
       "name": "course-work-tests",
       "version": "1.0.0",
       "dependencies": {
+        "course-work-tests": ".",
         "course-work-bll": "file:../bll",
         "course-work-dal": "file:../dal",
       },

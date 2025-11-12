@@ -20,7 +20,7 @@ describe("BookingService", () => {
   });
 
   test("should add a booking and persist it", async () => {
-    await trainService.create(filePath);
+    await trainService.createFile(filePath);
 
     const name = "Express";
     const route = "A-B";
@@ -30,11 +30,11 @@ describe("BookingService", () => {
     const wagon = new Wagon({ id: 1, type: "coupe", seats: [seat] });
     const train = new Train({ id, name, route, wagons: [wagon] });
 
-    await trainService.save(filePath, train);
+    await trainService.saveTrain(filePath, train);
 
     await service.addBooking(train, wagon, seat, "Alice");
 
-    const loaded = await trainService.load(filePath);
+    const loaded = await trainService.loadTrains(filePath);
     expect(loaded.length).toBe(1);
     const ltrain = loaded[0]!;
     const lwagon = ltrain.wagons[0]!;
@@ -49,7 +49,7 @@ describe("BookingService", () => {
   });
 
   test("addBooking initializes missing booking array and preserves other wagons", async () => {
-    await trainService.create(filePath);
+    await trainService.createFile(filePath);
 
     const name = "MultiWagon";
     const route = "M-N";
@@ -66,11 +66,11 @@ describe("BookingService", () => {
       wagons: [targetWagon, otherWagon],
     });
 
-    await trainService.save(filePath, train);
+    await trainService.saveTrain(filePath, train);
 
     await service.addBooking(train, targetWagon, seat, "Zed");
 
-    const loaded = await trainService.load(filePath);
+    const loaded = await trainService.loadTrains(filePath);
     expect(loaded[0]!.wagons.length).toBe(2);
     const lseat = loaded[0]!.wagons.find((w) => w.id === 10)!.seats[0]!;
     expect(lseat.booking).toBeDefined();
@@ -78,7 +78,7 @@ describe("BookingService", () => {
   });
 
   test("should remove a booking and update seat state", async () => {
-    await trainService.create(filePath);
+    await trainService.createFile(filePath);
 
     const name = "BookedTrain";
     const route = "X-Y";
@@ -93,7 +93,7 @@ describe("BookingService", () => {
     const wagon = new Wagon({ id: 1, type: "berth", seats: [seat] });
     const train = new Train({ id, name, route, wagons: [wagon] });
 
-    await trainService.save(filePath, train);
+    await trainService.saveTrain(filePath, train);
 
     const otherWagon = new Wagon({ id: 2, type: "coupe", seats: [] });
     train.wagons.push(otherWagon);
@@ -102,8 +102,7 @@ describe("BookingService", () => {
 
     await service.removeBooking("BK-1");
 
-    const loaded = await trainService.load(filePath);
-    // other wagon should remain
+    const loaded = await trainService.loadTrains(filePath);
     expect(loaded[0]!.wagons.some((w) => w.id === 2)).toBeTruthy();
     const lseat = loaded[0]!.wagons.find((w) => w.id === 1)!.seats[0]!;
     expect(lseat.isBooked).toBe(false);
@@ -116,7 +115,7 @@ describe("BookingService", () => {
   });
 
   test("should update an existing booking", async () => {
-    await trainService.create(filePath);
+    await trainService.createFile(filePath);
 
     const name = "UpdTrain";
     const route = "U-V";
@@ -131,7 +130,7 @@ describe("BookingService", () => {
     const wagon = new Wagon({ id: 1, type: "coupe", seats: [seat] });
     const train = new Train({ id, name, route, wagons: [wagon] });
 
-    await trainService.save(filePath, train);
+    await trainService.saveTrain(filePath, train);
 
     const updated = new Booking({
       id: "B-1",
@@ -140,14 +139,14 @@ describe("BookingService", () => {
     });
     await service.updateBooking(updated);
 
-    const loaded = await trainService.load(filePath);
+    const loaded = await trainService.loadTrains(filePath);
     const b = loaded[0]!.wagons[0]!.seats[0]!.booking![0]!;
     expect(b.passengerName).toBe("Carl Updated");
     expect(b.date).toBe("2025-03-03");
   });
 
   test("updateBooking preserves other wagons and resolves when no match found", async () => {
-    await trainService.create(filePath);
+    await trainService.createFile(filePath);
 
     const name = "UpdMulti";
     const route = "X-Y";
@@ -163,7 +162,7 @@ describe("BookingService", () => {
     const otherWagon = new Wagon({ id: 2, type: "berth", seats: [] });
     const train = new Train({ id, name, route, wagons: [wagon, otherWagon] });
 
-    await trainService.save(filePath, train);
+    await trainService.saveTrain(filePath, train);
 
     const updated = new Booking({
       id: "UM-1",
@@ -172,7 +171,7 @@ describe("BookingService", () => {
     });
     await service.updateBooking(updated);
 
-    const loaded = await trainService.load(filePath);
+    const loaded = await trainService.loadTrains(filePath);
     expect(loaded[0]!.wagons.some((w) => w.id === 2)).toBeTruthy();
     const b = loaded[0]!.wagons.find((w) => w.id === 1)!.seats[0]!.booking![0]!;
     expect(b.passengerName).toBe("Ori Upd");
@@ -185,7 +184,7 @@ describe("BookingService", () => {
   });
 
   test("should find bookings by keyword and validate input", async () => {
-    await trainService.create(filePath);
+    await trainService.createFile(filePath);
 
     const name = "Finder";
     const route = "A-A";
@@ -207,7 +206,7 @@ describe("BookingService", () => {
     const wagon = new Wagon({ id: 1, type: "coupe", seats: [seat1, seat2] });
     const train = new Train({ id, name, route, wagons: [wagon] });
 
-    await trainService.save(filePath, train);
+    await trainService.saveTrain(filePath, train);
 
     const matches = await service.findBookings("alice");
     expect(matches.length).toBe(1);
@@ -225,7 +224,7 @@ describe("BookingService", () => {
   });
 
   test("should load all bookings or throw when none", async () => {
-    await trainService.create(filePath);
+    await trainService.createFile(filePath);
 
     await expect(service.loadBookings()).rejects.toThrow("No bookings found");
 
@@ -242,11 +241,11 @@ describe("BookingService", () => {
     const wagon = new Wagon({ id: 1, type: "coupe", seats: [seat] });
     const train = new Train({ id, name, route, wagons: [wagon] });
 
-    await trainService.save(filePath, train);
+    await trainService.saveTrain(filePath, train);
 
     const all = await service.loadBookings();
     expect(all.length).toBeGreaterThan(0);
-    await trainService.delete(filePath);
+    await trainService.deleteFile(filePath);
   });
 
   test("seatFindById validations", async () => {

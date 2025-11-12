@@ -42,7 +42,7 @@ export class BookingService {
   }
 
   async removeBooking(bookingId: string): Promise<void> {
-    const trains = await this.trainService.load(this.filePath);
+    const trains = await this.trainService.loadTrains(this.filePath);
     for (const train of trains) {
       for (const wagon of train.wagons) {
         for (const seat of wagon.seats) {
@@ -72,7 +72,7 @@ export class BookingService {
   }
 
   async updateBooking(Booking: Booking): Promise<void> {
-    const trains = await this.trainService.load(this.filePath);
+    const trains = await this.trainService.loadTrains(this.filePath);
 
     for (const train of trains) {
       for (const wagon of train.wagons) {
@@ -101,7 +101,7 @@ export class BookingService {
   }
 
   async findBookings(keyword: string): Promise<Booking[]> {
-    const trains = await this.trainService.load(this.filePath);
+    const trains = await this.trainService.loadTrains(this.filePath);
     if (!keyword || typeof keyword !== "string")
       throw new Error("Invalid search keyword");
     const normalized = keyword.toUpperCase().trim();
@@ -126,7 +126,7 @@ export class BookingService {
   }
 
   async loadBookings(): Promise<Booking[]> {
-    const trains = await this.trainService.load(this.filePath);
+    const trains = await this.trainService.loadTrains(this.filePath);
     const bookings: Booking[] = [];
     for (const train of trains) {
       for (const wagon of train.wagons) {

@@ -27,10 +27,9 @@ export class JSONProvider<T extends object> implements IDataProvider<T> {
     await fs.writeFile(filePath, "[]", "utf-8");
   }
 
-  async deleteFile(filePath: string = "./trains.json"): Promise<void> {
+  async delete(filePath: string = "./trains.json"): Promise<void> {
     if (!(await fs.stat(filePath)).isFile()) {
       return
-      // throw new Error(`Path ${filePath} is not a file`);
     }
     await fs.unlink(filePath);
   }

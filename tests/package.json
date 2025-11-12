@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "course-work-bll": "file:../bll",
-    "course-work-dal": "file:../dal"
+    "course-work-dal": "file:../dal",
+    "course-work-tests": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

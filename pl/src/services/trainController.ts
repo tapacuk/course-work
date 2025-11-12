@@ -87,10 +87,10 @@ export default class TrainController {
     );
 
     try {
-      await this.service.save(this.filePath, train);
+      await this.service.saveTrain(this.filePath, train);
       console.log("Train added successfully.");
     } catch {
-      throw new Error("Failed to save train in file");
+      throw new Error("Failed to saveTrain train in file");
     }
   }
 
@@ -144,7 +144,7 @@ export default class TrainController {
 
     console.clear();
     try {
-      await this.service.deleteSpecific(this.filePath, trainToDelete.id);
+      await this.service.deleteTrain(this.filePath, trainToDelete.id);
     } catch (error: any) {
       console.log(`${error.message}`);
       return;
@@ -264,7 +264,7 @@ export default class TrainController {
     try {
       await this.service.updateTrain(this.filePath, trainToEdit);
     } catch {
-      throw new Error("Failed to save train with new wagon");
+      throw new Error("Failed to saveTrain train with new wagon");
     }
   }
 

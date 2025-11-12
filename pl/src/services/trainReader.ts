@@ -21,7 +21,7 @@ export default class TrainReader {
     console.clear();
     console.log("\n-- List of Trains --");
     try {
-      const trains = await this.service.load(this.filePath);
+      const trains = await this.service.loadTrains(this.filePath);
 
       if (trains.length === 0) {
         console.log("No trains available");
