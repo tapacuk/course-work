@@ -1,6 +1,6 @@
 import chalk from "chalk";
 import { question } from "./question";
-import { Train, TrainService, WagonService } from "course-work-bll";
+import { Train, WagonService } from "course-work-bll";
 
 export class WagonController {
   private wagonService: WagonService;
