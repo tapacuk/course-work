@@ -1,5 +1,5 @@
 import { question } from "./question";
-import { Booking, Train, TrainService, Wagon } from "course-work-bll";
+import { Train, TrainService } from "course-work-bll";
 import { WagonController } from "./wagonController";
 import chalk from "chalk";
 
@@ -78,28 +78,13 @@ export default class TrainController {
       console.log("Using default seats per wagon (10)");
     }
 
-    const wagons = [];
-    const seats = [];
-    wagonsType.toLowerCase().trim();
-
-    for (let j = 0; j < seatsPerWagon; j++) {
-      seats.push({ id: j + 1, isBooked: false, booking: [] as any });
-    }
-    for (let i = 0; i < Number(wagonsNum); i++) {
-      wagons.push(
-        new Wagon({ id: i + 1, type: wagonsType as any, seats: seats })
-      );
-    }
-
-    const id = await this.service.generateID(name, route);
-    const normalizedRoute = route.trim().replace(/\s+/g, "-");
-
-    const train = new Train({
-      id,
+    const train = await this.service.createTrain(
       name,
-      route: normalizedRoute,
-      wagons: wagons,
-    });
+      route,
+      Number(wagonsNum),
+      wagonsType,
+      seatsPerWagon
+    );
 
     try {
       await this.service.save(this.filePath, train);
@@ -116,7 +101,7 @@ export default class TrainController {
       return;
     }
 
-    let matches: Train[] = [];
+    let matches: any = [];
     try {
       matches = await this.service.findByID(keyword);
     } catch (error: any) {

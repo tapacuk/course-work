@@ -140,6 +140,39 @@ export class TrainService {
     );
     await this.provider.write(filePath, trains);
   }
+
+  async createTrain(
+    name: string,
+    route: string,
+    wagonsNum: number,
+    wagonsType: string,
+    seatsPerWagon: number
+  ): Promise<Train> {
+    const wagons = [];
+    const seats = [];
+    wagonsType.toLowerCase().trim();
+
+    for (let j = 0; j < seatsPerWagon; j++) {
+      seats.push({ id: j + 1, isBooked: false, booking: [] as any });
+    }
+    for (let i = 0; i < Number(wagonsNum); i++) {
+      wagons.push(
+        new Wagon({ id: i + 1, type: wagonsType as any, seats: seats })
+      );
+    }
+
+    const id = await this.generateID(name, route);
+    const normalizedRoute = route.trim().replace(/\s+/g, "-");
+
+    const train = new Train({
+      id,
+      name,
+      route: normalizedRoute,
+      wagons: wagons,
+    });
+
+    return train;
+  }
 }
 
 export default TrainService;
