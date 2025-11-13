@@ -71,7 +71,7 @@ export class BookingService {
     throw new Error("Booking not found");
   }
 
-  async updateBooking(Booking: Booking): Promise<void> {
+  async updateBooking(newBooking: Booking): Promise<void> {
     const trains = await this.trainService.loadTrains(this.filePath);
 
     for (const train of trains) {
@@ -79,17 +79,20 @@ export class BookingService {
         for (const seat of wagon.seats) {
           if (seat.booking) {
             const bookingIndex = seat.booking.findIndex(
-              (b: Booking) => b.id === Booking.id
+              (b: Booking) => b.id === newBooking.id
             );
             if (bookingIndex !== -1) {
-              seat.booking[bookingIndex] = Booking;
+              newBooking.id = await this.updateBookingID(
+                newBooking,
+                newBooking.passengerName
+              );
+              seat.booking[bookingIndex] = newBooking;
               const trainUpdates = train.wagons.map((w: Wagon) => {
                 if (w.id === wagon.id) {
                   return wagon;
                 }
                 return w;
               });
-
               train.wagons = trainUpdates;
               await this.trainService.updateTrain(this.filePath, train);
               return;
@@ -185,7 +188,7 @@ export class BookingService {
     const normalizedPassangerName = passanger
       .toUpperCase()
       .trim()
-      .replace(/\s+/g, "-");
+      .replace(/\s+/g, "_");
     return `${normalizedTrainName}-WAGON${wagon.id}-${normalizedWagonType}-SEAT${seat.id}-${normalizedPassangerName}`;
   }
 
@@ -196,7 +199,7 @@ export class BookingService {
     if (!newPassengerName || typeof newPassengerName !== "string")
       throw new Error("Invalid passenger name");
 
-    const namePart = newPassengerName.toUpperCase().trim().replace(/\s+/g, "-");
+    const namePart = newPassengerName.toUpperCase().trim().replace(/\s+/g, "_");
     const idParts = booking.id.split("-");
     idParts[idParts.length - 1] = namePart;
     return idParts.join("-");

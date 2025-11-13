@@ -289,12 +289,12 @@ export class BookingController {
 
           const newName = await question("\nEnter new passenger name: ");
           try {
-            const newID = await this.service.updateBookingID(
-              bookingToEdit,
-              newName
-            );
+            // const newID = await this.service.updateBookingID(
+            //   bookingToEdit,
+            //   newName
+            // );
             bookingToEdit.passengerName = newName.trim();
-            bookingToEdit.id = newID;
+            // bookingToEdit.id = newID;
           } catch (error: any) {
             console.clear();
             console.error(`${error.message}`);
@@ -330,7 +330,7 @@ export class BookingController {
           console.clear();
           console.log("Cancelled");
           editRunning = false;
-          return;
+          break;
         default:
           console.clear();
           console.log("Unknown option");

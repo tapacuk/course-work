@@ -1,6 +1,6 @@
 [
   {
-    "id": "TRAIN-EXPRESS-LVIV-ODESA",
+    "id": "TRAIN-FAST-EXPRESS-LVIV-ODESA",
     "name": "Fast Express",
     "route": "Lviv-Odesa",
     "wagons": [
@@ -117,8 +117,14 @@
           },
           {
             "id": 3,
-            "isBooked": false,
-            "booking": []
+            "isBooked": true,
+            "booking": [
+              {
+                "id": "FAST-EXPRESS-WAGON2-BERTH-SEAT3-VITALIY-A",
+                "passengerName": "a",
+                "date": "23.11.2025"
+              }
+            ]
           },
           {
             "id": 4,
