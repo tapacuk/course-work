@@ -303,7 +303,7 @@ describe("BookingService", () => {
     const seat = new Seat({ id: 5, isBooked: false, booking: [] });
 
     const id = await service.generateBookingID(train, wagon, seat, "John Doe");
-    expect(id).toMatch(/MY-TRAIN-WAGON2-BERTH-SEAT5-JOHN-DOE/);
+    expect(id).toMatch(/MY-TRAIN-WAGON2-BERTH-SEAT5-JOHN_DOE/);
 
     const booking = new Booking({
       id,
@@ -311,7 +311,7 @@ describe("BookingService", () => {
       date: "2025-07-07",
     });
     const updatedId = await service.updateBookingID(booking, "Jane Roe");
-    expect(updatedId.endsWith("JANE-ROE")).toBeTruthy();
+    expect(updatedId.endsWith("JANE_ROE")).toBeTruthy();
 
     await expect(
       service.updateBookingID(booking, "" as unknown as string)
